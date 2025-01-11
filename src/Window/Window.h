@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "../Math/Precision.h"
-#include <iostream>
+#include "../Logger/Logger.h"
 #include <vector>
 #include <glm/glm.hpp>
 

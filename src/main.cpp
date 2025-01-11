@@ -1,6 +1,7 @@
 #include "Window/Window.h"
 #include "Input/Input.h"
 #include "Renderer/Renderer.h"
+#include "Logger/Logger.h"
 #include "GUI/GUI.h"
 #include "Buffers/VAO.h"
 #include "Buffers/VBO.h"

@@ -9,6 +9,8 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui.h> // for imGui::GetCurrentWindow()
 
+// Taken from https://github.com/BalazsJako/ImGuiColorTextEdit
+
 // TODO
 // - multiline comments vs single-line: latter is blocking start of a ML
 

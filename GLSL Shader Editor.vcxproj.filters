@@ -55,6 +55,12 @@
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{97f32169-80c3-4d63-9338-61dc593ceaec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Logger">
+      <UniqueIdentifier>{f9ad3537-6f68-40fb-a9b7-f57e77dec89e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Logger">
+      <UniqueIdentifier>{34986c60-5e38-4799-9bf1-7938495199ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\imgui\imconfig.h">
@@ -111,6 +117,9 @@
     <ClInclude Include="src\GUI\TextEditor.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="src\Logger\Logger.h">
+      <Filter>Header Files\Logger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -163,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="src\GUI\TextEditor.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Logger\Logger.cpp">
+      <Filter>Source Files\Logger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -19,14 +19,14 @@ Window::Window(uint32 width, uint32 height, String title)
 	: width(width), height(height), title(title) {
 	ID = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (ID == nullptr) {
-		std::cout << "[Window] Failed to create Window.\n";
+		Logger::LogLine("Window", "Failed to create Window.");
 		glfwTerminate();
 		return;
 	}
 	glfwMakeContextCurrent(ID);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cout << "[GLAD] Failed to load GLAD.\n";
+		Logger::LogLine("GLAD", "Failed to load GLAD.");
 		glfwTerminate();
 		return;
 	}

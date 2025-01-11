@@ -29,19 +29,20 @@ void Shader::Use() {
 }
 void Shader::CheckError(uint32 object, String type) {
 	int32 success;
-	char infoLog[1024];
+	const uint32 infoLogSize = 1024;
+	char infoLog[infoLogSize];
 	if (type == "Program") {
 		glGetProgramiv(object, GL_LINK_STATUS, &success);
 		if (!success) {
-			glGetProgramInfoLog(object, 1024, nullptr, infoLog);
-			std::cout << "[Shader] Failed to link program.\n" << infoLog << '\n';
+			glGetProgramInfoLog(object, infoLogSize, nullptr, infoLog);
+			Logger::Log("Shader", std::string("Failed to link program.\n") + infoLog);
 		}
 	}
 	else if (type == "Vertex" || type == "Fragment") {
 		glGetShaderiv(object, GL_COMPILE_STATUS, &success);
 		if (!success) {
-			glGetShaderInfoLog(object, 1024, nullptr, infoLog);
-			std::cout << "[Shader] Failed to compile " << type << " shader.\n" << infoLog << '\n';
+			glGetShaderInfoLog(object, infoLogSize, nullptr, infoLog);
+			Logger::Log("Shader", std::string("Failed to compile ") + type + std::string(" shader.\n") + infoLog);
 		}
 	}
 }
@@ -94,7 +95,7 @@ String LoadShaderFromFile(String shaderPath) {
 		shaderCode = shaderStream.str();
 	}
 	catch (std::ifstream::failure e) {
-		std::cout << "[Shader] Failed to load shader from: " << shaderPath << '\n' << e.what() << '\n';
+		Logger::LogLine("Shader", std::string("Failed to load shader from: ") + shaderPath + '\n' + e.what());
 	}
 
 	return shaderCode;
