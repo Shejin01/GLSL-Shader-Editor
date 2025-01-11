@@ -44,6 +44,13 @@ void Window::SetWindowShouldClose(bool value) {
 	glfwSetWindowShouldClose(ID, value);
 }
 
+void Window::Maximize() {
+	glfwMaximizeWindow(ID);
+}
+void Window::Minimize() {
+	glfwIconifyWindow(ID);
+}
+
 void Window::SetSize(uint32 width, uint32 height) {
 	this->height = height;
 	this->width = width;

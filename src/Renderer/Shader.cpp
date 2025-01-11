@@ -81,22 +81,3 @@ void Shader::SetMat4(String name, glm::mat4 value) {
 void Shader::Delete() {
 	glDeleteProgram(ID);
 }
-
-String LoadShaderFromFile(String shaderPath) {
-	String shaderCode;
-	std::ifstream shaderFile;
-	shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-	try {
-		std::stringstream shaderStream;
-		shaderFile.open(shaderPath.c_str());
-		shaderStream << shaderFile.rdbuf();
-		shaderFile.close();
-		shaderCode = shaderStream.str();
-	}
-	catch (std::ifstream::failure e) {
-		Logger::LogLine("Shader", std::string("Failed to load shader from: ") + shaderPath + '\n' + e.what());
-	}
-
-	return shaderCode;
-}

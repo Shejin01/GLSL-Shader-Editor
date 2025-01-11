@@ -29,9 +29,11 @@ void main() {
 	float distance = 125.0;
 	vec2 pos = distance * vec2(cos(time), sin(time));
 	float blendFactor = 0.05;
+	vec2 flippedCursorPos = vec2(cursorPos.x, resolution.y - cursorPos.y);
 
 	float result = deCircle(p - center, radius);
 	result = smoothMin(result, deCircle(p - center - pos, radius), blendFactor);
-
+	result = smoothMin(result, deCircle(p - flippedCursorPos, radius), blendFactor);
+	
 	gl_FragColor = vec4(vec3(result), 1.0);
 }

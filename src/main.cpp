@@ -1,11 +1,12 @@
-#include "Window/Window.h"
-#include "Input/Input.h"
-#include "Renderer/Renderer.h"
-#include "Logger/Logger.h"
-#include "GUI/GUI.h"
 #include "Buffers/VAO.h"
 #include "Buffers/VBO.h"
+#include "File Loader/FileLoader.h"
+#include "GUI/GUI.h"
 #include "GUI/TextEditor.h"
+#include "Input/Input.h"
+#include "Logger/Logger.h"
+#include "Renderer/Renderer.h"
+#include "Window/Window.h"
 
 const uint32 WIDTH = 800, HEIGHT = 600;
 const String TITLE = "GLSL Shader Editor";
@@ -14,12 +15,13 @@ int main() {
 	Window::Init();
 
 	Window window(WIDTH, HEIGHT, TITLE);
+	window.Maximize();
 	Input input(&window);
 	GUI::Init(&window);
 
 	Renderer renderer;
-	String vertexShaderCode = LoadShaderFromFile("assets/Shaders/shader.vs");
-	String fragmentShaderCode = LoadShaderFromFile("assets/Shaders/shader.fs");
+	String vertexShaderCode = File::LoadFromFile("assets/Shaders/shader.vs");
+	String fragmentShaderCode = File::LoadFromFile("assets/Shaders/shader.fs");
 	Shader shader;
 	shader.Compile(vertexShaderCode.c_str(), fragmentShaderCode.c_str());
 
@@ -47,7 +49,7 @@ int main() {
 	editor.SetText(fragmentShaderCode);
 	editor.SetShowWhitespaces(false);
 
-	float blendFactor = 0.05;
+	String filepath(256, NULL);
 	while (!window.WindowShouldClose()) {
 		input.PollEvents();
 		if (input.GetKeyPressed(GLFW_KEY_ESCAPE)) window.SetWindowShouldClose(true);
@@ -61,20 +63,53 @@ int main() {
 		shader.SetFloat("time", glfwGetTime());
 		shader.SetVec2("cursorPos", input.GetCursorPos());
 
-		shader.SetFloat("blendFactor", blendFactor);
-
 		quadVao.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		quadVao.Unbind();
 
-		ImGui::Begin("Window", 0);
-		ImGui::Text("Hello World");
-		ImGui::DragFloat("Blend Factor", &blendFactor, 0.001);
+		ImGui::Begin("Code Editor");
 		if (ImGui::Button("Compile Code") || input.GetKeyPressed(GLFW_KEY_F5)) {
 			shader.Compile(vertexShaderCode, editor.GetText());
+		} ImGui::SameLine();
+		if (ImGui::Button("Save")) ImGui::OpenPopup("Save File"); ImGui::SameLine();
+		if (ImGui::Button("Load")) ImGui::OpenPopup("Load File"); ImGui::SameLine(0, 50.0f);
+		if (ImGui::Button("Undo")) editor.Undo(); ImGui::SameLine();
+		if (ImGui::Button("Redo")) editor.Redo(); ImGui::SameLine();
+		if (ImGui::Button("Cut")) editor.Cut(); ImGui::SameLine();
+		if (ImGui::Button("Copy")) editor.Copy(); ImGui::SameLine();
+		if (ImGui::Button("Paste")) editor.Paste(); ImGui::SameLine();
+		if (ImGui::Button("Delete")) editor.Delete();
+
+		if (ImGui::BeginPopupModal("Save File", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::InputText("File Path", &filepath[0], 256);
+			ImGui::SetItemDefaultFocus();
+			if (ImGui::Button("Save")) {
+				File::SaveToFile(filepath, editor.GetText());
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
 		}
+
+		if (ImGui::BeginPopupModal("Load File", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::InputText("File Path", &filepath[0], 256);
+			ImGui::SetItemDefaultFocus();
+			if (ImGui::Button("Load")) {
+				editor.SetText(File::LoadFromFile(filepath));
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
+
+		ImGui::Text("Total Lines: %i, Line: %i, Col: %i", editor.GetTotalLines(), editor.GetCursorPosition().mLine, editor.GetCursorPosition().mColumn);
+
 		editor.Render("Code", ImVec2(), true);
 		ImGui::End();
+
+		ImGui::ShowDemoWindow();
 
 		GUI::Render();
 		input.UpdateEvents();

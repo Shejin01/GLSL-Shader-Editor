@@ -4,13 +4,10 @@
 
 #include "../Math/Precision.h"
 #include "../Logger/Logger.h"
+#include "../File Loader/FileLoader.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include <string>
-#include <sstream>
-#include <fstream>
 
 class Shader {
 private:
@@ -34,5 +31,3 @@ public:
 
 	void Delete();
 };
-
-String LoadShaderFromFile(String shaderPath);

@@ -23,6 +23,9 @@ public:
 	bool WindowShouldClose() const;
 	void SetWindowShouldClose(bool value);
 
+	void Maximize();
+	void Minimize();
+
 	void SetSize(uint32 width, uint32 height);
 	glm::vec2 GetSize() const;
 	String GetTitle() const;
