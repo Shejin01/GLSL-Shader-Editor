@@ -34,6 +34,6 @@ void main() {
 	float result = deCircle(p - center, radius);
 	result = smoothMin(result, deCircle(p - center - pos, radius), blendFactor);
 	result = smoothMin(result, deCircle(p - flippedCursorPos, radius), blendFactor);
-	
+
 	gl_FragColor = vec4(vec3(result), 1.0);
 }

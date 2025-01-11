@@ -49,7 +49,13 @@ int main() {
 	editor.SetText(fragmentShaderCode);
 	editor.SetShowWhitespaces(false);
 
-	String filepath(256, NULL);
+	GUIContext context;
+	context.editor = &editor;
+	context.shader = &shader;
+	context.input = &input;
+	context.filepath = String(256, NULL);
+	context.vertexShaderCode = vertexShaderCode;
+
 	while (!window.WindowShouldClose()) {
 		input.PollEvents();
 		if (input.GetKeyPressed(GLFW_KEY_ESCAPE)) window.SetWindowShouldClose(true);
@@ -67,56 +73,12 @@ int main() {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		quadVao.Unbind();
 
-		ImGui::Begin("Code Editor");
-		if (ImGui::Button("Compile Code") || input.GetKeyPressed(GLFW_KEY_F5)) {
-			shader.Compile(vertexShaderCode, editor.GetText());
-		} ImGui::SameLine();
-		if (ImGui::Button("Save")) ImGui::OpenPopup("Save File"); ImGui::SameLine();
-		if (ImGui::Button("Load")) ImGui::OpenPopup("Load File"); ImGui::SameLine(0, 50.0f);
-		if (ImGui::Button("Undo")) editor.Undo(); ImGui::SameLine();
-		if (ImGui::Button("Redo")) editor.Redo(); ImGui::SameLine();
-		if (ImGui::Button("Cut")) editor.Cut(); ImGui::SameLine();
-		if (ImGui::Button("Copy")) editor.Copy(); ImGui::SameLine();
-		if (ImGui::Button("Paste")) editor.Paste(); ImGui::SameLine();
-		if (ImGui::Button("Delete")) editor.Delete();
+		GUI::Render(context);
 
-		if (ImGui::BeginPopupModal("Save File", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::InputText("File Path", &filepath[0], 256);
-			ImGui::SetItemDefaultFocus();
-			if (ImGui::Button("Save")) {
-				File::SaveToFile(filepath, editor.GetText());
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
-			ImGui::EndPopup();
-		}
-
-		if (ImGui::BeginPopupModal("Load File", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::InputText("File Path", &filepath[0], 256);
-			ImGui::SetItemDefaultFocus();
-			if (ImGui::Button("Load")) {
-				editor.SetText(File::LoadFromFile(filepath));
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
-			ImGui::EndPopup();
-		}
-
-		ImGui::Text("Total Lines: %i, Line: %i, Col: %i", editor.GetTotalLines(), editor.GetCursorPosition().mLine, editor.GetCursorPosition().mColumn);
-
-		editor.Render("Code", ImVec2(), true);
-		ImGui::End();
-
-		ImGui::ShowDemoWindow();
-
-		GUI::Render();
 		input.UpdateEvents();
 		glfwSwapBuffers(window.ID);
 	}
 
-	shader.Delete();
 	GUI::Shutdown();
 
 	return 0;

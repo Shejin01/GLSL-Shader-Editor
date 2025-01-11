@@ -30,4 +30,5 @@ public:
 	void SetMat4(String name, glm::mat4 value);
 
 	void Delete();
+	~Shader();
 };

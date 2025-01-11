@@ -81,3 +81,6 @@ void Shader::SetMat4(String name, glm::mat4 value) {
 void Shader::Delete() {
 	glDeleteProgram(ID);
 }
+Shader::~Shader() {
+	Delete();
+}
