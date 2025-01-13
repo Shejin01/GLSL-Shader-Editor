@@ -156,16 +156,17 @@
     <ClInclude Include="include\imgui\imstb_rectpack.h" />
     <ClInclude Include="include\imgui\imstb_textedit.h" />
     <ClInclude Include="include\imgui\imstb_truetype.h" />
-    <ClInclude Include="src\Buffers\VAO.h" />
-    <ClInclude Include="src\Buffers\VBO.h" />
+    <ClInclude Include="src\Camera\Camera.h" />
+    <ClInclude Include="src\Renderer\Buffers\VAO.h" />
+    <ClInclude Include="src\Renderer\Buffers\VBO.h" />
     <ClInclude Include="src\File Loader\FileLoader.h" />
     <ClInclude Include="src\GUI\GUI.h" />
     <ClInclude Include="src\GUI\TextEditor.h" />
-    <ClInclude Include="src\Input\Input.h" />
     <ClInclude Include="src\Logger\Logger.h" />
     <ClInclude Include="src\Math\Precision.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
+    <ClInclude Include="src\Window\Input.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -176,20 +177,22 @@
     <ClCompile Include="include\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="src\Buffers\VAO.cpp" />
-    <ClCompile Include="src\Buffers\VBO.cpp" />
+    <ClCompile Include="src\Camera\Camera.cpp" />
+    <ClCompile Include="src\Renderer\Buffers\VAO.cpp" />
+    <ClCompile Include="src\Renderer\Buffers\VBO.cpp" />
     <ClCompile Include="src\File Loader\FileLoader.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\GUI\GUI.cpp" />
     <ClCompile Include="src\GUI\TextEditor.cpp" />
-    <ClCompile Include="src\Input\Input.cpp" />
     <ClCompile Include="src\Logger\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Window\Input.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\Shaders\RayMarching.fs" />
     <None Include="assets\Shaders\shader.fs" />
     <None Include="assets\Shaders\shader.vs" />
   </ItemGroup>

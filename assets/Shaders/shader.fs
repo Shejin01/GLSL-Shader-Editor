@@ -7,6 +7,7 @@ in vec2 TexCoord;
 uniform vec2 resolution;
 uniform float time;
 uniform vec2 cursorPos;
+uniform mat4 viewMatrix;
 //*************************//
 
 uniform float blendFactor;

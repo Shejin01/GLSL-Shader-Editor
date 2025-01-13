@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glad/glad.h>
-#include "../Math/Precision.h"
+#include "../../Math/Precision.h"
 
 #include <stdlib.h>
 

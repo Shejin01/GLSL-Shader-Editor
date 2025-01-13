@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 #include <vector>
-#include "../Math/Precision.h"
+#include "../../Math/Precision.h"
 
 class VBO {
 public:

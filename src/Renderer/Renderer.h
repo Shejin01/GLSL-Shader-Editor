@@ -2,8 +2,8 @@
 
 #include <glad/glad.h>
 #include "Shader.h"
-#include "../Buffers/VAO.h"
-#include "../Buffers/VBO.h"
+#include "Buffers/VAO.h"
+#include "Buffers/VBO.h"
 
 class Renderer {
 public:

@@ -95,3 +95,10 @@ void Input::SetScrollOffset(double offset) {
 double Input::GetScrollOffset() const {
 	return mouseData.scrollOffset;
 }
+
+void Input::SetCursorMode(int value) {
+	glfwSetInputMode(window->ID, GLFW_CURSOR, value);
+}
+int Input::GetCursorMode() const {
+	return glfwGetInputMode(window->ID, GLFW_CURSOR);
+}

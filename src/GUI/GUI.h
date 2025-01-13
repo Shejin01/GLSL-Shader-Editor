@@ -5,7 +5,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "../Window/Window.h"
 #include "TextEditor.h"
-#include "../Input/Input.h"
+#include "../Window/Input.h"
 #include "../Renderer/Shader.h"
 
 struct GUIContext {
@@ -28,6 +28,7 @@ private:
 public:
 	static void Init(Window* window);
 	static void NewFrame();
-	static void Render(GUIContext& context);
+	static void Process(GUIContext& context);
+	static void Render();
 	static void Shutdown();
 };

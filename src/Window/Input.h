@@ -53,4 +53,7 @@ public:
 
 	void SetScrollOffset(double offset);
 	double GetScrollOffset() const;
+
+	void SetCursorMode(int value);
+	int GetCursorMode() const;
 };

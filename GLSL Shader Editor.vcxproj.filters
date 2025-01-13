@@ -15,12 +15,6 @@
     <Filter Include="Source Files\ImGui">
       <UniqueIdentifier>{0f54f2a5-677a-4ddc-81c7-96af5283e9b2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Buffers">
-      <UniqueIdentifier>{972e6cda-ff6c-4044-85ad-758d43531997}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Buffers">
-      <UniqueIdentifier>{2068b481-087a-46f1-8ca9-7ad20adae76b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Renderer">
       <UniqueIdentifier>{797cdccc-4d4c-4b50-94ec-e1ad74d35aa0}</UniqueIdentifier>
     </Filter>
@@ -43,12 +37,6 @@
     <Filter Include="Asset Files\Shader">
       <UniqueIdentifier>{65928947-70bf-4c68-9d83-a4be409d0793}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Input">
-      <UniqueIdentifier>{baeaf9a9-9fa8-4ea4-8789-1735030008eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Input">
-      <UniqueIdentifier>{3b2cb110-ffd7-4eed-a4d9-960e238011a5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\GUI">
       <UniqueIdentifier>{05fcfcc3-56e2-459e-ac33-6110aee835a9}</UniqueIdentifier>
     </Filter>
@@ -66,6 +54,18 @@
     </Filter>
     <Filter Include="Header Files\File Loader">
       <UniqueIdentifier>{945707c3-7122-46ef-84bf-55071c05d6d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Camera">
+      <UniqueIdentifier>{476150f6-4375-43f4-9203-c29ee5f441be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Renderer\Buffers">
+      <UniqueIdentifier>{2068b481-087a-46f1-8ca9-7ad20adae76b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Renderer\Buffers">
+      <UniqueIdentifier>{972e6cda-ff6c-4044-85ad-758d43531997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Camera">
+      <UniqueIdentifier>{fb25366b-8025-4045-b21d-ddedc583c5da}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,11 +96,11 @@
     <ClInclude Include="include\imgui\imstb_truetype.h">
       <Filter>Header Files\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Buffers\VAO.h">
-      <Filter>Header Files\Buffers</Filter>
+    <ClInclude Include="src\Renderer\Buffers\VAO.h">
+      <Filter>Header Files\Renderer\Buffers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Buffers\VBO.h">
-      <Filter>Header Files\Buffers</Filter>
+    <ClInclude Include="src\Renderer\Buffers\VBO.h">
+      <Filter>Header Files\Renderer\Buffers</Filter>
     </ClInclude>
     <ClInclude Include="src\Math\Precision.h">
       <Filter>Header Files\Math</Filter>
@@ -114,9 +114,6 @@
     <ClInclude Include="src\Renderer\Renderer.h">
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Input\Input.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
     <ClInclude Include="src\GUI\GUI.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -128,6 +125,12 @@
     </ClInclude>
     <ClInclude Include="src\File Loader\FileLoader.h">
       <Filter>Header Files\File Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Window\Input.h">
+      <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera\Camera.h">
+      <Filter>Header Files\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -158,11 +161,11 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Buffers\VAO.cpp">
-      <Filter>Source Files\Buffers</Filter>
+    <ClCompile Include="src\Renderer\Buffers\VAO.cpp">
+      <Filter>Source Files\Renderer\Buffers</Filter>
     </ClCompile>
-    <ClCompile Include="src\Buffers\VBO.cpp">
-      <Filter>Source Files\Buffers</Filter>
+    <ClCompile Include="src\Renderer\Buffers\VBO.cpp">
+      <Filter>Source Files\Renderer\Buffers</Filter>
     </ClCompile>
     <ClCompile Include="src\Window\Window.cpp">
       <Filter>Source Files\Window</Filter>
@@ -172,9 +175,6 @@
     </ClCompile>
     <ClCompile Include="src\Renderer\Renderer.cpp">
       <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Input\Input.cpp">
-      <Filter>Source Files\Input</Filter>
     </ClCompile>
     <ClCompile Include="src\GUI\GUI.cpp">
       <Filter>Source Files\GUI</Filter>
@@ -188,6 +188,12 @@
     <ClCompile Include="src\File Loader\FileLoader.cpp">
       <Filter>Source Files\File Loader</Filter>
     </ClCompile>
+    <ClCompile Include="src\Window\Input.cpp">
+      <Filter>Source Files\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera\Camera.cpp">
+      <Filter>Source Files\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\Shaders\shader.fs">
@@ -196,5 +202,6 @@
     <None Include="assets\Shaders\shader.vs">
       <Filter>Asset Files\Shader</Filter>
     </None>
+    <None Include="assets\Shaders\RayMarching.fs" />
   </ItemGroup>
 </Project>

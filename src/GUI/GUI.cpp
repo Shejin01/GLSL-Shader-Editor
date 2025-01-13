@@ -13,7 +13,7 @@ void GUI::NewFrame() {
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 }
-void GUI::Render(GUIContext& context) {
+void GUI::Process(GUIContext& context) {
 	if (ImGui::Begin("Code Editor", 0, ImGuiWindowFlags_MenuBar)) {
 		Data data;
 		if (ImGui::BeginMenuBar()) {
@@ -38,6 +38,12 @@ void GUI::Render(GUIContext& context) {
 				if (ImGui::MenuItem("Compile Code", "F5")) data.compile = true;
 				ImGui::EndMenu();
 			}
+
+			if (ImGui::BeginMenu("Help")) {
+				ImGui::Text("Press C while the UI is deselected to enable Camera Mode.");
+				ImGui::EndMenu();
+			}
+
 			ImGui::EndMenuBar();
 		}
 
@@ -71,11 +77,11 @@ void GUI::Render(GUIContext& context) {
 
 		ImGui::Text("Total Lines: %i, Line: %i | Col: %i", context.editor->GetTotalLines(), context.editor->GetCursorPosition().mLine, context.editor->GetCursorPosition().mColumn);
 
-		context.editor->Render("Code", ImVec2(), true);
-		
-		ImGui::End();
+		context.editor->Render("Code", ImVec2(), true);	
 	}
-
+	ImGui::End();
+}
+void GUI::Render() {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
