@@ -60,7 +60,7 @@ vec3 rotateZ(vec3 p, float angle) {
 }
 
 void main() {
-	float radius = 0.15f;
+	float radius = 0.4f;
 	vec3 color = vec3(0.0f);
 
 	vec2 ndc = (2.0 * gl_FragCoord.xy - resolution.xy) / resolution.y;
@@ -70,23 +70,26 @@ void main() {
 	for (int i = 0; i < 80; i++) {
 		vec3 p = ro + t * rd;
 		p = vec3(inverse(viewMatrix) * vec4(p, 1.0f));
-		p = rotateX(p, t*0.004);
-		p = rotateY(p, t*0.005);
-		p = rotateZ(p, t*0.003);
+		/*p = rotateX(p, t*0.004);
+		p = rotateY(p, t*0.005);*/
+		p = rotateZ(p, t*0.03*sin(time));
 		
-		p = opRepeat(p, vec3(1.0f), vec3(0.5f));
+		p = opRepeat(p, vec3(2.0f), vec3(1.0f));
 		float d = deCircle(p, radius);
 		t += d;
 
-		if (d > 100.0f) break;
-		if (d < 0.1f) {
-			color = palette(t*0.2f);
+		if (t > 100.0f) break;
+		if (d < 0.001f) {
+			color = palette(t*0.1f);
 			break;
 		}
 	}
 
 	gl_FragColor = vec4(color, 1.0f);
 }
+
+
+
 
 
 

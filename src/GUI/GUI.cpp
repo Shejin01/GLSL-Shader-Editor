@@ -14,12 +14,15 @@ void GUI::NewFrame() {
 	ImGui::NewFrame();
 }
 void GUI::Process(GUIContext& context) {
-	if (ImGui::Begin("Code Editor", 0, ImGuiWindowFlags_MenuBar)) {
+	ImGuiWindowFlags flags = ImGuiWindowFlags_MenuBar;
+	if (ImGui::Begin("Code Editor", 0, flags)) {
 		Data data;
+		context.editor->IsTextChanged();
 		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("New")) context.editor->SetText(String());
 				if (ImGui::MenuItem("Save", "Ctrl+S")) data.saveFile = true;
+				if (ImGui::MenuItem("Save As", "Ctrl+Shift+S")) data.saveAsFile = true;
 				if (ImGui::MenuItem("Open", "Ctrl+O")) data.loadFile = true;
 				ImGui::Text("Press ESC to Quit");
 				ImGui::EndMenu();
@@ -41,17 +44,26 @@ void GUI::Process(GUIContext& context) {
 
 			if (ImGui::BeginMenu("Help")) {
 				ImGui::Text("Press C while the UI is deselected to enable Camera Mode.");
+				ImGui::Text("WASD - Camera Movement");
+				ImGui::Text("Scroll Wheel - Change Camera Speed (Capped between 0.1 and 100.0)");
 				ImGui::EndMenu();
 			}
 
 			ImGui::EndMenuBar();
 		}
 
-		if (data.saveFile || (context.input->GetKeyHeld(GLFW_KEY_LEFT_CONTROL) && context.input->GetKeyPressed(GLFW_KEY_S))) ImGui::OpenPopup("Save File");
-		if (data.loadFile || (context.input->GetKeyHeld(GLFW_KEY_LEFT_CONTROL) && context.input->GetKeyPressed(GLFW_KEY_O))) ImGui::OpenPopup("Open File");
+		bool isCtrlHeld = context.input->GetKeyHeld(GLFW_KEY_LEFT_CONTROL) || context.input->GetKeyHeld(GLFW_KEY_RIGHT_CONTROL);
+		bool isShiftHeld = context.input->GetKeyHeld(GLFW_KEY_LEFT_SHIFT) || context.input->GetKeyHeld(GLFW_KEY_RIGHT_SHIFT);
+		if (data.saveFile || (isCtrlHeld && context.input->GetKeyPressed(GLFW_KEY_S))) {
+			Logger::LogLine("Debug", context.filepath);
+			File::SaveToFile(context.filepath, context.editor->GetText());
+			Logger::LogLine("Code Editor", "File Saved");
+		}
+		if (data.saveAsFile || (isCtrlHeld && isShiftHeld && context.input->GetKeyPressed(GLFW_KEY_S))) ImGui::OpenPopup("Save As File");
+		if (data.loadFile || (isCtrlHeld && context.input->GetKeyPressed(GLFW_KEY_O))) ImGui::OpenPopup("Open File");
 		if (data.compile || context.input->GetKeyPressed(GLFW_KEY_F5)) context.shader->Compile(context.vertexShaderCode, context.editor->GetText());
 
-		if (ImGui::BeginPopupModal("Save File", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
+		if (ImGui::BeginPopupModal("Save As File", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
 			ImGui::InputText("File Path", &context.filepath[0], 256);
 			ImGui::SetItemDefaultFocus();
 			if (ImGui::Button("Save")) {

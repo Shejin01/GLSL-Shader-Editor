@@ -20,6 +20,7 @@ class GUI {
 private:
 	struct Data {
 		bool saveFile = false;
+		bool saveAsFile = false;
 		bool loadFile = false;
 		bool compile = false;
 	};
