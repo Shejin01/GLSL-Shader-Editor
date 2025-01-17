@@ -9,7 +9,6 @@
 class Camera {
 private:
 	glm::vec2 lastCursorPos;
-	double pitch = 0.0f, yaw = -90.0f;
 	bool cursorDisabled = false;
 
 	void ProcessKeyboard(Input* input, float dt);
@@ -19,6 +18,7 @@ public:
 	glm::vec3 position;
 	glm::vec3 front;
 	glm::vec3 up;
+	double pitch = 0.0f, yaw = -90.0f;
 	float speed = 10.0f;
 	float sensitivity = 0.1f;
 

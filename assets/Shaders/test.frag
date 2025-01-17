@@ -4,12 +4,10 @@ in vec2 TexCoord;
 
 // Built-In Uniforms
 //*************************//
-uniform vec2 resolution;
-uniform float time;
-uniform vec2 cursorPos;
+uniform vec2 iResolution;
+uniform float iTime;
+uniform vec2 iCursorPos;
 //*************************//
-
-uniform float blendFactor;
 
 float smoothMax(float a, float b, float k) {
 	return log(exp(k*a) + exp(k*b)) / k;
@@ -23,17 +21,17 @@ float deCircle(vec2 point, float radius) {
 }
 
 void main() {
-	vec2 center = resolution / 2.0;
+	vec2 center = iResolution / 2.0;
 	vec2 p = gl_FragCoord.xy;
 	float radius = 50.0;
 	float distance = 125.0;
-	vec2 pos = distance * vec2(cos(time), sin(time));
+	vec2 pos = distance * vec2(cos(iTime), sin(iTime));
 	float blendFactor = 0.05;
-	vec2 flippedCursorPos = vec2(cursorPos.x, resolution.y - cursorPos.y);
 
 	float result = deCircle(p - center, radius);
 	result = smoothMin(result, deCircle(p - center - pos, radius), blendFactor);
-	result = smoothMin(result, deCircle(p - flippedCursorPos, radius), blendFactor);
+	result = smoothMin(result, deCircle(p - iCursorPos, radius), blendFactor);
 
 	gl_FragColor = vec4(vec3(result), 1.0);
 }
+

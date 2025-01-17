@@ -202,6 +202,8 @@
     <None Include="assets\Shaders\shader.vs">
       <Filter>Asset Files\Shader</Filter>
     </None>
-    <None Include="assets\Shaders\RayMarching.fs" />
+    <None Include="assets\Shaders\RayMarching.fs">
+      <Filter>Asset Files\Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

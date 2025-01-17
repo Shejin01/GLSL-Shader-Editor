@@ -4,13 +4,10 @@ in vec2 TexCoord;
 
 // Built-In Uniforms
 //*************************//
-uniform vec2 iResolution;
-uniform float iTime;
-uniform float iTimeDelta;
-uniform int iFrame;
-uniform vec4 iMouse;
-uniform mat4 iViewMatrix;
-uniform vec3 iCameraPos;
+uniform vec2 resolution;
+uniform float time;
+uniform vec2 cursorPos;
+uniform mat4 viewMatrix;
 //*************************//
 
 float smoothMax(float a, float b, float k) {
@@ -66,16 +63,16 @@ void main() {
 	float radius = 0.4f;
 	vec3 color = vec3(0.0f);
 
-	vec2 ndc = (2.0 * gl_FragCoord.xy - iResolution.xy) / iResolution.y;
+	vec2 ndc = (2.0 * gl_FragCoord.xy - resolution.xy) / resolution.y;
 	vec3 ro = vec3(0.0f);
 	vec3 rd = normalize(vec3(ndc, -1.0f));
 	float t = 0.0f;
 	for (int i = 0; i < 80; i++) {
 		vec3 p = ro + t * rd;
-		p = vec3(inverse(iViewMatrix) * vec4(p, 1.0f));
+		p = vec3(inverse(viewMatrix) * vec4(p, 1.0f));
 		/*p = rotateX(p, t*0.004);
 		p = rotateY(p, t*0.005);*/
-		p = rotateZ(p, t*0.03*sin(iTime));
+		p = rotateZ(p, t*0.03*sin(time));
 		
 		p = opRepeat(p, vec3(2.0f), vec3(1.0f));
 		float d = deCircle(p, radius);
@@ -90,4 +87,9 @@ void main() {
 
 	gl_FragColor = vec4(color, 1.0f);
 }
+
+
+
+
+
 

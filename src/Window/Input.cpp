@@ -40,6 +40,7 @@ void Input::PollEvents() {
 }
 void Input::UpdateEvents() {
 	mouseData.scrollOffset = 0.0;
+	mouseData.prevCursorPos = mouseData.cursorPos;
 	for (int i = 0; i < 348; i++) {
 		keyData.prevPressedKeys[i] = keyData.pressedKeys[i];
 	}
@@ -88,12 +89,23 @@ void Input::SetCursorPos(double x, double y) {
 glm::vec2 Input::GetCursorPos() const {
 	return mouseData.cursorPos;
 }
+bool Input::isMouseMoved() const {
+	glm::vec2 offset = mouseData.cursorPos - mouseData.prevCursorPos;
+	return (offset == glm::vec2(0.0, 0.0)) ? false : true;
+}
 
 void Input::SetScrollOffset(double offset) {
 	mouseData.scrollOffset = offset;
+	mouseData.scrollAccumulator += offset;
 }
 double Input::GetScrollOffset() const {
 	return mouseData.scrollOffset;
+}
+void Input::SetScrollAmount(double scrollAmount) {
+	mouseData.scrollAccumulator = scrollAmount;
+}
+float Input::GetScrollAmount() const {
+	return mouseData.scrollAccumulator;
 }
 
 void Input::SetCursorMode(int value) {

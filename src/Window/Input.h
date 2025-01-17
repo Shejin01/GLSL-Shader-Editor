@@ -17,7 +17,9 @@ public:
 		bool prevPressedButtons[8];
 		bool pressedButtons[8];
 		glm::vec2 cursorPos;
+		glm::vec2 prevCursorPos;
 		float scrollOffset;
+		float scrollAccumulator = 0.0f;
 	};
 private:
 	KeyData keyData;
@@ -50,9 +52,12 @@ public:
 	void SetCursorPos(glm::vec2 position);
 	void SetCursorPos(double x, double y);
 	glm::vec2 GetCursorPos() const;
+	bool isMouseMoved() const;
 
 	void SetScrollOffset(double offset);
 	double GetScrollOffset() const;
+	void SetScrollAmount(double scrollAmount);
+	float GetScrollAmount() const;
 
 	void SetCursorMode(int value);
 	int GetCursorMode() const;

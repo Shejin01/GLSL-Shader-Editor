@@ -7,11 +7,13 @@
 #include "TextEditor.h"
 #include "../Window/Input.h"
 #include "../Renderer/Shader.h"
+#include "../Camera/Camera.h"
 
 struct GUIContext {
 	TextEditor* editor;
 	Input* input;
 	Shader* shader;
+	Camera* camera;
 	String filepath;
 	String vertexShaderCode;
 };

@@ -34,6 +34,13 @@ void GUI::Process(GUIContext& context) {
 				if (ImGui::MenuItem("Cut", "Ctrl+X")) context.editor->Cut();
 				if (ImGui::MenuItem("Copy", "Ctrl+C")) context.editor->Copy();
 				if (ImGui::MenuItem("Paste", "Ctrl+V")) context.editor->Paste();
+				ImGui::SeparatorText("Mouse");
+				if (ImGui::MenuItem("Reset Camera Position")) {
+					context.camera->position = glm::vec3(0.0f);
+					context.camera->front = glm::vec3(0.0f, 0.0f, -1.0f);
+					context.camera->yaw = -90.0f;
+				};
+				if (ImGui::MenuItem("Reset Scroll Amount")) context.input->SetScrollAmount(0.0);
 				ImGui::EndMenu();
 			}
 
@@ -54,8 +61,7 @@ void GUI::Process(GUIContext& context) {
 
 		bool isCtrlHeld = context.input->GetKeyHeld(GLFW_KEY_LEFT_CONTROL) || context.input->GetKeyHeld(GLFW_KEY_RIGHT_CONTROL);
 		bool isShiftHeld = context.input->GetKeyHeld(GLFW_KEY_LEFT_SHIFT) || context.input->GetKeyHeld(GLFW_KEY_RIGHT_SHIFT);
-		if (data.saveFile || (isCtrlHeld && context.input->GetKeyPressed(GLFW_KEY_S))) {
-			Logger::LogLine("Debug", context.filepath);
+		if (data.saveFile || (isCtrlHeld && !isShiftHeld && context.input->GetKeyPressed(GLFW_KEY_S))) {
 			File::SaveToFile(context.filepath, context.editor->GetText());
 			Logger::LogLine("Code Editor", "File Saved");
 		}
@@ -87,8 +93,8 @@ void GUI::Process(GUIContext& context) {
 			ImGui::EndPopup();
 		}
 
+		ImGui::Text("FPS: %.3f", ImGui::GetIO().Framerate);
 		ImGui::Text("Total Lines: %i, Line: %i | Col: %i", context.editor->GetTotalLines(), context.editor->GetCursorPosition().mLine, context.editor->GetCursorPosition().mColumn);
-
 		context.editor->Render("Code", ImVec2(), true);	
 	}
 	ImGui::End();

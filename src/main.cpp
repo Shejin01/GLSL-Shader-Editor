@@ -56,9 +56,12 @@ int main() {
 	context.editor = &editor;
 	context.shader = &shader;
 	context.input = &input;
+	context.camera = &camera;
 	context.filepath = String(256, NULL);
 	context.vertexShaderCode = vertexShaderCode;
 
+	uint32 iFrame = 0;
+	glm::vec4 iMouse;
 	float prevTime = 0.0f;
 	while (!window.WindowShouldClose()) {
 		float crntTime = glfwGetTime();
@@ -74,10 +77,31 @@ int main() {
 
 		shader.Use();
 
-		shader.SetVec2("resolution", window.GetSize());
-		shader.SetFloat("time", glfwGetTime());
-		shader.SetVec2("cursorPos", input.GetCursorPos());
-		shader.SetMat4("viewMatrix", camera.GetViewMatrix());
+		glm::vec2 iCursorPos = input.GetCursorPos();
+		iCursorPos.y = window.GetSize().y - iCursorPos.y;
+		if (input.GetMouseButtonHeld(GLFW_MOUSE_BUTTON_LEFT) || input.GetMouseButtonHeld(GLFW_MOUSE_BUTTON_RIGHT)) {
+			iMouse.x = iCursorPos.x;
+			iMouse.y = iCursorPos.y;
+		}
+		if (input.GetMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) || input.GetMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+			iMouse.z = iMouse.x;
+			iMouse.w = iMouse.y;
+		}
+		else if (input.GetMouseButtonReleased(GLFW_MOUSE_BUTTON_LEFT) || input.GetMouseButtonReleased(GLFW_MOUSE_BUTTON_RIGHT)) {
+			iMouse.z *= -1;
+			iMouse.w *= -1;
+		}
+		shader.SetVec2("iResolution", window.GetSize());
+		shader.SetFloat("iTime", glfwGetTime());
+		shader.SetFloat("iTimeDelta", dt);
+		shader.SetFloat("iFrameRate", ImGui::GetIO().Framerate);
+		shader.SetInt("iFrame", iFrame);
+		shader.SetVec4("iMouse", iMouse);
+		shader.SetVec2("iCursorPos", iCursorPos);
+		shader.SetMat4("iViewMatrix", camera.GetViewMatrix());
+		shader.SetVec3("iCameraPos", camera.position);
+		shader.SetFloat("iScrollOffset", input.GetScrollOffset());
+		shader.SetFloat("iScrollAmount", input.GetScrollAmount());
 
 		quadVao.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -88,6 +112,7 @@ int main() {
 		GUI::Render();
 		glfwSwapBuffers(window.ID);
 		input.UpdateEvents();
+		iFrame++;
 	}
 
 	GUI::Shutdown();
