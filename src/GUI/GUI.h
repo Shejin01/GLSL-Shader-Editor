@@ -20,18 +20,27 @@ struct GUIContext {
 
 class GUI {
 private:
-	struct Data {
+	struct FrameData {
 		bool saveFile = false;
 		bool saveAsFile = false;
 		bool loadFile = false;
 		bool compile = false;
 	};
+	struct Data {
+		bool showPalettePicker = false;
+		bool showColorPicker = false;
 
+		float colorPalette[12];
+		float color[4];
+	};
+	static Data data;
 	GUI() {}
-public:
+	static void ShowColorPicker(GUIContext* context, bool* p_open);
+	static void ShowPalettePicker(GUIContext* context, bool* p_open);
+ public:
 	static void Init(Window* window);
 	static void NewFrame();
-	static void Process(GUIContext& context);
+	static void Process(GUIContext* context);
 	static void Render();
 	static void Shutdown();
 };

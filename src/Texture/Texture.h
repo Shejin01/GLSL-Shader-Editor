@@ -1,0 +1,20 @@
+#pragma once
+
+#include <glad/glad.h>
+#include "../Math/Precision.h"
+#include "../Logger/Logger.h"
+#include "stb_image.h"
+
+class Texture {
+private:
+	int32 width, height, nrChannels;
+	void CreateTexture(unsigned char* pixels, int32 width, int32 height, int32 nrChannels);
+public:
+	uint32 ID = 0;
+
+	Texture(unsigned char* pixels, int32 width, int32 height, int32 nrChannels);
+	Texture(const char* texturePath);
+	void Bind(uint32 textureUnit);
+	void Unbind();
+	void Delete();
+};

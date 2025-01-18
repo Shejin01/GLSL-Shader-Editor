@@ -6,6 +6,8 @@
 #include "Renderer/Buffers/VAO.h"
 #include "Renderer/Buffers/VBO.h"
 #include "Renderer/Renderer.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "Texture/Texture.h"
 #include "Window/Input.h"
 #include "Window/Window.h"
 
@@ -60,6 +62,11 @@ int main() {
 	context.filepath = String(256, NULL);
 	context.vertexShaderCode = vertexShaderCode;
 
+	Texture texture("assets/Textures/container_diffuse.png");
+
+	shader.Use();
+	shader.SetInt("ourTexture", 0);
+
 	uint32 iFrame = 0;
 	glm::vec4 iMouse;
 	float prevTime = 0.0f;
@@ -103,11 +110,15 @@ int main() {
 		shader.SetFloat("iScrollOffset", input.GetScrollOffset());
 		shader.SetFloat("iScrollAmount", input.GetScrollAmount());
 
+		texture.Bind(0);
+
 		quadVao.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		quadVao.Unbind();
 
-		GUI::Process(context);
+		GUI::Process(&context);
+
+		ImGui::ShowDemoWindow();
 
 		GUI::Render();
 		glfwSwapBuffers(window.ID);
@@ -116,6 +127,7 @@ int main() {
 	}
 
 	GUI::Shutdown();
+	texture.Delete();
 
 	return 0;
 }
