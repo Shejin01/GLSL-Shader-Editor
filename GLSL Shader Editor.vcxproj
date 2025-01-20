@@ -168,6 +168,7 @@
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Texture\stb_image.h" />
     <ClInclude Include="src\Texture\Texture.h" />
+    <ClInclude Include="src\Texture\TextureManager.h" />
     <ClInclude Include="src\Window\Input.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
@@ -191,6 +192,7 @@
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\Texture\Texture.cpp" />
+    <ClCompile Include="src\Texture\TextureManager.cpp" />
     <ClCompile Include="src\Window\Input.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>

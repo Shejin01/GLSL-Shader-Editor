@@ -1,6 +1,7 @@
 #include "GUI.h"
 
 GUI::Data GUI::data;
+GUI::FrameData GUI::fdata;
 
 void GUI::Init(Window* window) {
 	IMGUI_CHECKVERSION();
@@ -18,8 +19,7 @@ void GUI::NewFrame() {
 void GUI::Process(GUIContext* context) {
 	ImGuiWindowFlags flags = ImGuiWindowFlags_MenuBar;
 	if (ImGui::Begin("Code Editor", 0, flags)) {
-		FrameData fdata;
-		context->editor->IsTextChanged();
+		fdata = FrameData();
 		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("New")) context->editor->SetText(String());
@@ -54,6 +54,7 @@ void GUI::Process(GUIContext* context) {
 			if (ImGui::BeginMenu("Tools")) {
 				ImGui::MenuItem("Color Picker", 0, &data.showColorPicker);
 				ImGui::MenuItem("Palette Picker", 0, &data.showPalettePicker);
+				ImGui::MenuItem("Texture Browser", 0, &data.showTextureBrowser);
 				ImGui::EndMenu();
 			}
 				
@@ -71,7 +72,7 @@ void GUI::Process(GUIContext* context) {
 		bool isCtrlHeld = input.GetKeyHeld(GLFW_KEY_LEFT_CONTROL) || input.GetKeyHeld(GLFW_KEY_RIGHT_CONTROL);
 		bool isShiftHeld = input.GetKeyHeld(GLFW_KEY_LEFT_SHIFT) || input.GetKeyHeld(GLFW_KEY_RIGHT_SHIFT);
 		if (fdata.saveFile || (isCtrlHeld && !isShiftHeld && input.GetKeyPressed(GLFW_KEY_S))) {
-			File::SaveToFile(context->filepath, context->editor->GetText());
+			File::SaveToFile(context->shaderFilepath, context->editor->GetText());
 			Logger::LogLine("Code Editor", "File Saved");
 		}
 		if (fdata.saveAsFile || (isCtrlHeld && isShiftHeld && input.GetKeyPressed(GLFW_KEY_S))) ImGui::OpenPopup("Save As File");
@@ -79,10 +80,10 @@ void GUI::Process(GUIContext* context) {
 		if (fdata.compile || input.GetKeyPressed(GLFW_KEY_F5)) context->shader->Compile(context->vertexShaderCode, context->editor->GetText());
 
 		if (ImGui::BeginPopupModal("Save As File", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::InputText("File Path", &context->filepath[0], 256);
+			ImGui::InputText("File Path", &context->shaderFilepath[0], 256);
 			ImGui::SetItemDefaultFocus();
 			if (ImGui::Button("Save")) {
-				File::SaveToFile(context->filepath, context->editor->GetText());
+				File::SaveToFile(context->shaderFilepath, context->editor->GetText());
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
@@ -91,10 +92,10 @@ void GUI::Process(GUIContext* context) {
 		}
 
 		if (ImGui::BeginPopupModal("Open File", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::InputText("File Path", &context->filepath[0], 256);
+			ImGui::InputText("File Path", &context->shaderFilepath[0], 256);
 			ImGui::SetItemDefaultFocus();
 			if (ImGui::Button("Load")) {
-				context->editor->SetText(File::LoadFromFile(context->filepath));
+				context->editor->SetText(File::LoadFromFile(context->shaderFilepath));
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
@@ -102,15 +103,17 @@ void GUI::Process(GUIContext* context) {
 			ImGui::EndPopup();
 		}
 
-		if (data.showColorPicker) ShowColorPicker(context, &data.showColorPicker);
-		if (data.showPalettePicker) ShowPalettePicker(context, &data.showPalettePicker);
-
-		ImGui::Text("FPS: %.3f", ImGui::GetIO().Framerate);
+		ImGui::Text("FPS: %.3f (%.2fms)", ImGui::GetIO().Framerate, ImGui::GetIO().DeltaTime*1000.0f);
 		ImGui::Text("Total Lines: %i, Line: %i | Col: %i", context->editor->GetTotalLines(), context->editor->GetCursorPosition().mLine, context->editor->GetCursorPosition().mColumn);
 		context->editor->Render("Code", ImVec2(), true);	
 	}
 	ImGui::End();
+
+	if (data.showColorPicker) ShowColorPicker(context, &data.showColorPicker);
+	if (data.showPalettePicker) ShowPalettePicker(context, &data.showPalettePicker);
+	if (data.showTextureBrowser) ShowTextureBrowser(context, &data.showTextureBrowser);
 }
+
 void GUI::ShowColorPicker(GUIContext* context, bool* p_open) {
 	if (ImGui::Begin("Color Picker", p_open)) {
 		ImGui::ColorPicker4("Color", data.color);
@@ -123,6 +126,68 @@ void GUI::ShowPalettePicker(GUIContext* context, bool* p_open) {
 		ImGui::ColorEdit3("Color 2", &data.colorPalette[3]);
 		ImGui::ColorEdit3("Color 3", &data.colorPalette[6]);
 		ImGui::ColorEdit3("Color 4", &data.colorPalette[9]);
+	}
+	ImGui::End();
+}
+void GUI::ShowTextureBrowser(GUIContext* context, bool* p_open) {
+	if (ImGui::Begin("Texture Browser", p_open, ImGuiWindowFlags_MenuBar)) {
+		// Menu Bar
+		if (ImGui::BeginMenuBar()) {
+			if (ImGui::BeginMenu("File")) {
+				if (ImGui::MenuItem("Load Texture")) fdata.loadTexture = true;
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
+		if (fdata.loadTexture) ImGui::OpenPopup("Load Texture");
+
+		// Load Texture Popup
+		if (ImGui::BeginPopupModal("Load Texture", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::InputText("Texture File Path", &data.textureFilepath[0], 256);
+			ImGui::InputText("Texture Name", &data.textureName[0], 256);
+			ImGui::SetItemDefaultFocus();
+			if (ImGui::Button("Load")) {
+				TextureManager::AddTexture(data.textureName, data.textureFilepath);
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
+
+		// Textures Section
+		float windowHalfWidth = (ImGui::GetWindowWidth() - 25) * 0.5;
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+		ImGui::BeginChild("Textures", ImVec2(windowHalfWidth, 0), ImGuiChildFlags_Borders);
+		int i = 0;
+		for (auto iter : TextureManager::textures) {
+			if (ImGui::ImageButton(iter.first.c_str(), iter.second.ID, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0))) {
+				data.selectedTexture = iter.first;
+			}
+			ImGui::SameLine();
+			i++;
+			if (i % (int)(std::fmax((windowHalfWidth / 116), 1)) == 0) ImGui::NewLine();
+		}
+		ImGui::EndChild();
+		ImGui::SameLine();
+
+		// Properties Section
+		ImGui::BeginChild("Properties", ImVec2(windowHalfWidth, 0), ImGuiChildFlags_Borders);
+		if (data.selectedTexture != "") {
+			Texture* texture = TextureManager::GetTexture(data.selectedTexture);
+			ImGui::Image(texture->ID, ImVec2(windowHalfWidth-15, windowHalfWidth-15), ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::Text(("Selected Texture: " + data.selectedTexture).c_str());
+			ImGui::Text(("Texture Path: " + texture->GetTexturePath()).c_str());
+			ImGui::Text("Resolution: %ix%i", texture->GetWidth(), texture->GetHeight());
+			ImGui::Text("Number of Color Channels: %i", texture->GetNumberOfChannels());
+			if (ImGui::Button("Delete")) {
+				TextureManager::DeleteTexture(data.selectedTexture);
+				data.selectedTexture = "";
+			}
+		}
+		ImGui::EndChild();
+		ImGui::PopStyleVar();
 	}
 	ImGui::End();
 }

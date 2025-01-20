@@ -36,6 +36,9 @@ Window::Window(uint32 width, uint32 height, String title)
 	SetSize(width, height);
 	glfwSetFramebufferSizeCallback(ID, framebuffer_size_callback);
 }
+void Window::SwapBuffers() {
+	glfwSwapBuffers(ID);
+}
 
 bool Window::WindowShouldClose() const {
 	return glfwWindowShouldClose(ID);

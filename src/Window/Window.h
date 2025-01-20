@@ -19,7 +19,8 @@ public:
 	
 	static void Init();
 	Window(uint32 width, uint32 height, String title);
-	
+	void SwapBuffers();
+
 	bool WindowShouldClose() const;
 	void SetWindowShouldClose(bool value);
 

@@ -1,3 +1,4 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include "Camera/Camera.h"
 #include "File Loader/FileLoader.h"
 #include "GUI/GUI.h"
@@ -6,8 +7,8 @@
 #include "Renderer/Buffers/VAO.h"
 #include "Renderer/Buffers/VBO.h"
 #include "Renderer/Renderer.h"
-#define STB_IMAGE_IMPLEMENTATION
 #include "Texture/Texture.h"
+#include "Texture/TextureManager.h"
 #include "Window/Input.h"
 #include "Window/Window.h"
 
@@ -54,18 +55,19 @@ int main() {
 	editor.SetText(fragmentShaderCode);
 	editor.SetShowWhitespaces(false);
 
+	stbi_set_flip_vertically_on_load(true);
+	Texture texture("assets/Textures/container_diffuse.png");
+	TextureManager::AddTexture("texture0", &texture);
+	TextureManager::AddTexture("texture1", "assets/Textures/pepe.jpg");
+	TextureManager::AddTexture("texture2", "assets/Textures/smiley.png");
+	TextureManager::AddTexture("texture3", "assets/Textures/wojak.png");
+
 	GUIContext context;
 	context.editor = &editor;
 	context.shader = &shader;
 	context.input = &input;
 	context.camera = &camera;
-	context.filepath = String(256, NULL);
 	context.vertexShaderCode = vertexShaderCode;
-
-	Texture texture("assets/Textures/container_diffuse.png");
-
-	shader.Use();
-	shader.SetInt("ourTexture", 0);
 
 	uint32 iFrame = 0;
 	glm::vec4 iMouse;
@@ -110,7 +112,7 @@ int main() {
 		shader.SetFloat("iScrollOffset", input.GetScrollOffset());
 		shader.SetFloat("iScrollAmount", input.GetScrollAmount());
 
-		texture.Bind(0);
+		TextureManager::BindAllTextures(&shader);
 
 		quadVao.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -118,16 +120,14 @@ int main() {
 
 		GUI::Process(&context);
 
-		ImGui::ShowDemoWindow();
-
 		GUI::Render();
-		glfwSwapBuffers(window.ID);
+		window.SwapBuffers();
 		input.UpdateEvents();
 		iFrame++;
 	}
 
 	GUI::Shutdown();
-	texture.Delete();
+	TextureManager::DeleteAllTextures();
 
 	return 0;
 }
