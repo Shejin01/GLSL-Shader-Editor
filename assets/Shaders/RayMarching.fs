@@ -7,10 +7,22 @@ in vec2 TexCoord;
 uniform vec2 iResolution;
 uniform float iTime;
 uniform float iTimeDelta;
+uniform float iFrameRate;
 uniform int iFrame;
-uniform vec4 iMouse;
-uniform mat4 iViewMatrix;
-uniform vec3 iCameraPos;
+uniform vec4 iMouse;	 // Shadertoy Implementation
+
+struct Camera {
+	mat4 iViewMatrix;
+	vec3 iCameraPos;
+	vec3 iCameraDir;
+};
+struct Mouse {
+	vec2 iCursorPos; // Custom Implementation
+	float iScrollOffset;
+	float iScrollAmount;
+};
+uniform Camera camera;
+uniform Mouse mouse;
 //*************************//
 
 float smoothMax(float a, float b, float k) {
@@ -72,7 +84,7 @@ void main() {
 	float t = 0.0f;
 	for (int i = 0; i < 80; i++) {
 		vec3 p = ro + t * rd;
-		p = vec3(inverse(iViewMatrix) * vec4(p, 1.0f));
+		p = vec3(inverse(camera.iViewMatrix) * vec4(p, 1.0f));
 		/*p = rotateX(p, t*0.004);
 		p = rotateY(p, t*0.005);*/
 		p = rotateZ(p, t*0.03*sin(iTime));
@@ -90,4 +102,5 @@ void main() {
 
 	gl_FragColor = vec4(color, 1.0f);
 }
+
 

@@ -6,7 +6,6 @@ in vec2 TexCoord;
 //*************************//
 uniform vec2 iResolution;
 uniform float iTime;
-uniform mat4 iViewMatrix;
 //*************************//
 
 
@@ -168,5 +167,6 @@ void main()
 
     
 }
+
 
 

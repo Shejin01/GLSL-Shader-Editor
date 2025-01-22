@@ -10,11 +10,19 @@ uniform float iTimeDelta;
 uniform float iFrameRate;
 uniform int iFrame;
 uniform vec4 iMouse;	 // Shadertoy Implementation
-uniform vec2 iCursorPos; // Custom Implementation
-uniform mat4 iViewMatrix;
-uniform vec3 iCameraPos;
-uniform float iScrollOffset;
-uniform float iScrollAmount;
+
+struct Camera {
+	mat4 iViewMatrix;
+	vec3 iCameraPos;
+	vec3 iCameraDir;
+};
+struct Mouse {
+	vec2 iCursorPos; // Custom Implementation
+	float iScrollOffset;
+	float iScrollAmount;
+};
+uniform Camera camera;
+uniform Mouse mouse;
 //*************************//
 
 float smoothMax(float a, float b, float k) {

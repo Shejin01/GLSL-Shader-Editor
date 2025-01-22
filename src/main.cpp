@@ -106,11 +106,12 @@ int main() {
 		shader.SetFloat("iFrameRate", ImGui::GetIO().Framerate);
 		shader.SetInt("iFrame", iFrame);
 		shader.SetVec4("iMouse", iMouse);
-		shader.SetVec2("iCursorPos", iCursorPos);
-		shader.SetMat4("iViewMatrix", camera.GetViewMatrix());
-		shader.SetVec3("iCameraPos", camera.position);
-		shader.SetFloat("iScrollOffset", input.GetScrollOffset());
-		shader.SetFloat("iScrollAmount", input.GetScrollAmount());
+		shader.SetVec2("mouse.iCursorPos", iCursorPos);
+		shader.SetFloat("mouse.iScrollOffset", input.GetScrollOffset());
+		shader.SetFloat("mouse.iScrollAmount", input.GetScrollAmount());
+		shader.SetMat4("camera.iViewMatrix", camera.GetViewMatrix());
+		shader.SetVec3("camera.iCameraPos", camera.position);
+		shader.SetVec3("camera.iCameraDir", camera.front);
 
 		TextureManager::BindAllTextures(&shader);
 

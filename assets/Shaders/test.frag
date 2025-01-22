@@ -6,7 +6,12 @@ in vec2 TexCoord;
 //*************************//
 uniform vec2 iResolution;
 uniform float iTime;
-uniform vec2 iCursorPos;
+struct Mouse {
+	vec2 iCursorPos; // Custom Implementation
+	float iScrollOffset;
+	float iScrollAmount;
+};
+uniform Mouse mouse;
 //*************************//
 
 float smoothMax(float a, float b, float k) {
@@ -30,8 +35,9 @@ void main() {
 
 	float result = deCircle(p - center, radius);
 	result = smoothMin(result, deCircle(p - center - pos, radius), blendFactor);
-	result = smoothMin(result, deCircle(p - iCursorPos, radius), blendFactor);
+	result = smoothMin(result, deCircle(p - mouse.iCursorPos, radius), blendFactor);
 
 	gl_FragColor = vec4(vec3(result), 1.0);
 }
+
 

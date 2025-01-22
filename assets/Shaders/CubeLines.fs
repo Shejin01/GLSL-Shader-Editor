@@ -10,8 +10,6 @@ uniform float iTimeDelta;
 uniform float iFrameRate;
 uniform int iFrame;
 uniform vec4 iMouse;	 // Shadertoy Implementation
-uniform vec2 iCursorPos; // Custom Implementation
-uniform mat4 iViewMatrix;
 //*************************//
 
 // Created by Danil (2021+) https://cohost.org/arugl
@@ -771,3 +769,4 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 void main() {
 	mainImage(gl_FragColor, gl_FragCoord.xy);
 }
+

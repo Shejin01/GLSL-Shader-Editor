@@ -6,8 +6,6 @@ in vec2 TexCoord;
 //*************************//
 uniform vec2 iResolution;
 uniform float iTime;
-uniform vec2 iMouse;
-uniform mat4 iViewMatrix;
 //*************************//
 
 /*
@@ -342,4 +340,5 @@ void main(){
     // Rough gamma correction.
     gl_FragColor = vec4(sqrt(clamp(col, 0., 1.)), 1.);
 }
+
 
