@@ -73,6 +73,12 @@
     <Filter Include="Header Files\Texture">
       <UniqueIdentifier>{d70b7fd4-b8f4-4c5f-b3c0-75d688b470f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Framebuffer">
+      <UniqueIdentifier>{a7401f93-5aa1-4467-a5c8-97e047e3b791}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Framebuffer">
+      <UniqueIdentifier>{8361c98d-b2d3-4f6b-ad4f-7c94d77752ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\imgui\imconfig.h">
@@ -147,6 +153,9 @@
     <ClInclude Include="src\Texture\TextureManager.h">
       <Filter>Header Files\Texture</Filter>
     </ClInclude>
+    <ClInclude Include="src\Framebuffer\Framebuffer.h">
+      <Filter>Header Files\Framebuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -214,6 +223,9 @@
     </ClCompile>
     <ClCompile Include="src\Texture\TextureManager.cpp">
       <Filter>Source Files\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Framebuffer\Framebuffer.cpp">
+      <Filter>Source Files\Framebuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

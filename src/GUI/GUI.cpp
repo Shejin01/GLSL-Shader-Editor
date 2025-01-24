@@ -2,6 +2,7 @@
 
 GUI::Data GUI::data;
 GUI::FrameData GUI::fdata;
+FBO GUI::fbo;
 
 void GUI::Init(Window* window) {
 	IMGUI_CHECKVERSION();
@@ -10,6 +11,20 @@ void GUI::Init(Window* window) {
 	ImGui::StyleColorsDark();
 	ImGui_ImplGlfw_InitForOpenGL(window->ID, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
+
+	String vertexShaderCode = File::LoadFromFile("assets/Shaders/shader.vs");
+	String fPaletteShaderCode =
+		"#version 330 core\n"
+		"in vec2 TexCoord;"
+		"uniform vec3 a;\n"
+		"uniform vec3 b;\n"
+		"uniform vec3 c;\n"
+		"uniform vec3 d;\n"
+		"void main() {\n"
+		"	float t = TexCoord.x;\n"
+		"	gl_FragColor = vec4(a + b * cos(6.283185 * (c * t + d)), 1.0f);\n"
+		"}\n";
+	data.paletteShader.Compile(vertexShaderCode.c_str(), fPaletteShaderCode.c_str());
 }
 void GUI::NewFrame() {
 	ImGui_ImplOpenGL3_NewFrame();
@@ -117,15 +132,41 @@ void GUI::Process(GUIContext* context) {
 void GUI::ShowColorPicker(GUIContext* context, bool* p_open) {
 	if (ImGui::Begin("Color Picker", p_open)) {
 		ImGui::ColorPicker4("Color", data.color);
+		if (ImGui::Button("Copy Color As GLSL Code")) {
+			String string = "vec3 color = vec3(" + std::to_string(data.color[0] ) + ", " + std::to_string(data.color[1]) + ", " + std::to_string(data.color[2]) + ");";
+			ImGui::SetClipboardText(string.c_str());
+		}
 	}
 	ImGui::End();
 }
 void GUI::ShowPalettePicker(GUIContext* context, bool* p_open) {
-	if (ImGui::Begin("Palette Picker", p_open)) {		
-		ImGui::ColorEdit3("Color 1", &data.colorPalette[0]);
-		ImGui::ColorEdit3("Color 2", &data.colorPalette[3]);
-		ImGui::ColorEdit3("Color 3", &data.colorPalette[6]);
-		ImGui::ColorEdit3("Color 4", &data.colorPalette[9]);
+	if (ImGui::Begin("Palette Picker", p_open)) {
+		fbo = FBO(ImGui::GetWindowWidth()-15, 1);
+		fbo.Bind();
+		data.paletteShader.Use();
+		data.paletteShader.SetMat4("model", glm::scale(glm::mat4(1.0), glm::vec3(1.0)));
+		data.paletteShader.SetVec3("a", data.colorPalette[0], data.colorPalette[1], data.colorPalette[2]);
+		data.paletteShader.SetVec3("b", data.colorPalette[3], data.colorPalette[4], data.colorPalette[5]);
+		data.paletteShader.SetVec3("c", data.colorPalette[6], data.colorPalette[7], data.colorPalette[8]);
+		data.paletteShader.SetVec3("d", data.colorPalette[9], data.colorPalette[10], data.colorPalette[11]);
+		context->renderer->DrawQuad();
+		fbo.Unbind(context->window->GetSize());
+
+		ImGui::Image(fbo.GetTextureID(), ImVec2(ImGui::GetWindowWidth() - 15, 100));
+		ImGui::DragFloat3("Brightness", &data.colorPalette[0], 0.01, -5.0f, 5.0f);
+		ImGui::DragFloat3("Contrast", &data.colorPalette[3], 0.01, -5.0f, 5.0f);
+		ImGui::DragFloat3("Frequency", &data.colorPalette[6], 0.01, -5.0f, 5.0f);
+		ImGui::DragFloat3("Phase Offset", &data.colorPalette[9], 0.01, -5.0f, 5.0f);
+		if (ImGui::Button("Copy Palette As GLSL Code")) {
+			String string =
+				"vec3 color1 = vec3(" + std::to_string(data.colorPalette[0]) + ", " + std::to_string(data.colorPalette[1]) + ", " + std::to_string(data.colorPalette[2]) + ");\n"
+				"vec3 color2 = vec3(" + std::to_string(data.colorPalette[3]) + ", " + std::to_string(data.colorPalette[4]) + ", " + std::to_string(data.colorPalette[5]) + ");\n"
+				"vec3 color3 = vec3(" + std::to_string(data.colorPalette[6]) + ", " + std::to_string(data.colorPalette[7]) + ", " + std::to_string(data.colorPalette[8]) + ");\n"
+				"vec3 color4 = vec3(" + std::to_string(data.colorPalette[9]) + ", " + std::to_string(data.colorPalette[10]) + ", " + std::to_string(data.colorPalette[11]) + ");";
+			ImGui::SetClipboardText(string.c_str());
+		}
+		ImGui::Text("Courtesy of Inigo Quilez:");
+		ImGui::TextLinkOpenURL("https://iquilezles.org/articles/palettes/");
 	}
 	ImGui::End();
 }

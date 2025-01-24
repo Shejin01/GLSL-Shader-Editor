@@ -9,6 +9,8 @@
 #include "../Renderer/Shader.h"
 #include "../Camera/Camera.h"
 #include "../Texture/TextureManager.h"
+#include "../Framebuffer/Framebuffer.h"
+#include "../Renderer/Renderer.h"
 
 struct GUIContext {
 	TextEditor* editor;
@@ -17,6 +19,8 @@ struct GUIContext {
 	Camera* camera;
 	String shaderFilepath = String(256, NULL);
 	String vertexShaderCode;
+	Renderer* renderer;
+	Window* window;
 };
 
 class GUI {
@@ -37,11 +41,19 @@ private:
 		String textureFilepath = String(256, NULL);
 		String textureName = String(256, NULL);
 
-		float colorPalette[12];
+		Shader paletteShader;
+
+		float colorPalette[12] = {
+			0.5, 0.5, 0.5,
+			0.5, 0.5, 0.5,
+			1.0, 1.0, 1.0,
+			0.00, 0.33, 0.67
+		};
 		float color[4];
 	};
 	static Data data;
 	static FrameData fdata;
+	static FBO fbo;
 	GUI() {}
 	static void ShowColorPicker(GUIContext* context, bool* p_open);
 	static void ShowPalettePicker(GUIContext* context, bool* p_open);

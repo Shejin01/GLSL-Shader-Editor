@@ -1,5 +1,6 @@
 #include "VBO.h"
 
+VBO::VBO() {}
 VBO::VBO(std::vector<float>* vertices) {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
@@ -14,7 +15,4 @@ void VBO::Unbind() {
 }
 void VBO::Delete() {
 	glDeleteBuffers(1, &ID);
-}
-VBO::~VBO() {
-	Delete();
 }

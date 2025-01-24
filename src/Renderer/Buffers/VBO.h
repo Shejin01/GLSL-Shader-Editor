@@ -8,9 +8,9 @@ class VBO {
 public:
 	uint32 ID;
 
+	VBO();
 	VBO(std::vector<float>* vertices);
 	void Bind();
 	void Unbind();
 	void Delete();
-	~VBO();
 };

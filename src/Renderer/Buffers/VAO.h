@@ -14,5 +14,4 @@ public:
 	void Bind();
 	void Unbind();
 	void Delete();
-	~VAO();
 };

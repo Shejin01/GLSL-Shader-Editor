@@ -31,25 +31,6 @@ int main() {
 
 	Camera camera(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-	std::vector<float> vertices = {
-		-1.0f, -1.0f,	0.0f, 0.0f,
-		 1.0f, -1.0f,	1.0f, 0.0f,
-		 1.0f,  1.0f,	1.0f, 1.0f,
-
-		 1.0f,  1.0f,	1.0f, 1.0f,
-		-1.0f,  1.0f,	0.0f, 1.0f,
-		-1.0f, -1.0f,	0.0f, 0.0f
-	};
-
-	VAO quadVao;
-	quadVao.Bind();
-	VBO quadVbo(&vertices);
-	quadVbo.Bind();
-	quadVao.LinkAttrib(0, 2, 4 * sizeof(float), 0);
-	quadVao.LinkAttrib(1, 2, 4 * sizeof(float), 2 * sizeof(float));
-	quadVao.Unbind();
-	quadVbo.Unbind();
-
 	TextEditor editor;
 	editor.SetLanguageDefinition(TextEditor::LanguageDefinition::GLSL());
 	editor.SetText(fragmentShaderCode);
@@ -68,6 +49,8 @@ int main() {
 	context.input = &input;
 	context.camera = &camera;
 	context.vertexShaderCode = vertexShaderCode;
+	context.renderer = &renderer;
+	context.window = &window;
 
 	uint32 iFrame = 0;
 	glm::vec4 iMouse;
@@ -100,6 +83,8 @@ int main() {
 			iMouse.z *= -1;
 			iMouse.w *= -1;
 		}
+
+		shader.SetMat4("model", glm::mat4(1.0));
 		shader.SetVec2("iResolution", window.GetSize());
 		shader.SetFloat("iTime", glfwGetTime());
 		shader.SetFloat("iTimeDelta", dt);
@@ -115,9 +100,7 @@ int main() {
 
 		TextureManager::BindAllTextures(&shader);
 
-		quadVao.Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		quadVao.Unbind();
+		renderer.DrawQuad();
 
 		GUI::Process(&context);
 
