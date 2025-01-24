@@ -70,6 +70,7 @@ void GUI::Process(GUIContext* context) {
 				ImGui::MenuItem("Color Picker", 0, &data.showColorPicker);
 				ImGui::MenuItem("Palette Picker", 0, &data.showPalettePicker);
 				ImGui::MenuItem("Texture Browser", 0, &data.showTextureBrowser);
+				ImGui::MenuItem("Camera Info", 0, &data.showCameraInfoOverlay);
 				ImGui::EndMenu();
 			}
 				
@@ -127,6 +128,7 @@ void GUI::Process(GUIContext* context) {
 	if (data.showColorPicker) ShowColorPicker(context, &data.showColorPicker);
 	if (data.showPalettePicker) ShowPalettePicker(context, &data.showPalettePicker);
 	if (data.showTextureBrowser) ShowTextureBrowser(context, &data.showTextureBrowser);
+	if (data.showCameraInfoOverlay) ShowCameraInfoOverlay(context, &data.showCameraInfoOverlay);
 }
 
 void GUI::ShowColorPicker(GUIContext* context, bool* p_open) {
@@ -230,6 +232,20 @@ void GUI::ShowTextureBrowser(GUIContext* context, bool* p_open) {
 		ImGui::EndChild();
 		ImGui::PopStyleVar();
 	}
+	ImGui::End();
+}
+void GUI::ShowCameraInfoOverlay(GUIContext* context, bool* p_open) {
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.WindowRounding = 8.0f;
+	ImGui::SetNextWindowBgAlpha(0.35f);
+	if (ImGui::Begin("Camera Info Overlay", p_open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("Camera Info Overlay");
+		ImGui::Text("FPS: %.3f (%.2fms)", ImGui::GetIO().Framerate, ImGui::GetIO().DeltaTime * 1000.0f);
+		ImGui::Text("Position: (%.3f, %.3f, %.3f)", context->camera->position.x, context->camera->position.y, context->camera->position.z);
+		ImGui::Text("Direction: (%.3f, %.3f, %.3f)", context->camera->front.x, context->camera->front.y, context->camera->front.z);
+		ImGui::Text("Speed: %.3f", context->camera->speed);
+	}
+	style.WindowRounding = 0.0f;
 	ImGui::End();
 }
 

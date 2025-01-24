@@ -36,6 +36,7 @@ private:
 		bool showPalettePicker = false;
 		bool showColorPicker = false;
 		bool showTextureBrowser = false;
+		bool showCameraInfoOverlay = false;
 
 		String selectedTexture = "";
 		String textureFilepath = String(256, NULL);
@@ -58,6 +59,7 @@ private:
 	static void ShowColorPicker(GUIContext* context, bool* p_open);
 	static void ShowPalettePicker(GUIContext* context, bool* p_open);
 	static void ShowTextureBrowser(GUIContext* context, bool* p_open);
+	static void ShowCameraInfoOverlay(GUIContext* context, bool* p_open);
  public:
 	static void Init(Window* window);
 	static void NewFrame();
