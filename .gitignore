@@ -361,3 +361,19 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/GLSL Shader Editor.zip
+/GLSL Shader Editor/GLSL Shader Editor.exe
+/GLSL Shader Editor/imgui.ini
+/GLSL Shader Editor/assets/Textures/container_diffuse.png
+/GLSL Shader Editor/assets/Textures/pepe.jpg
+/GLSL Shader Editor/assets/Textures/smiley.png
+/GLSL Shader Editor/assets/Textures/wojak.png
+/GLSL Shader Editor/assets/Shaders/CubeLines.fs
+/GLSL Shader Editor/assets/Shaders/CyberFuji2020.fs
+/GLSL Shader Editor/assets/Shaders/Mesmerizing.fs
+/GLSL Shader Editor/assets/Shaders/OldSchoolTube.fs
+/GLSL Shader Editor/assets/Shaders/RayMarching.fs
+/GLSL Shader Editor/assets/Shaders/RealisticRayMarching.fs
+/GLSL Shader Editor/assets/Shaders/shader.fs
+/GLSL Shader Editor/assets/Shaders/shader.vs
+/GLSL Shader Editor/assets/Shaders/test.frag
