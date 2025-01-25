@@ -41,6 +41,8 @@ private:
 		String selectedTexture = "";
 		String textureFilepath = String(256, NULL);
 		String textureName = String(256, NULL);
+		String loadedShaderFilepath = "assets/Shaders/shader.fs";
+		std::vector<String> recentFiles = { "assets/Shaders/shader.fs" };
 
 		Shader paletteShader;
 

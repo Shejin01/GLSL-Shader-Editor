@@ -14,10 +14,27 @@ namespace File {
 			text = stream.str();
 		}
 		catch (std::ifstream::failure e) {
-			Logger::LogLine("File Loader", std::string("Failed to read file from: ") + filepath + '\n' + e.what());
+			Logger::LogLine("File Loader", String("Failed to read file from: ") + filepath + '\n' + e.what());
 		}
 
 		return text;
+	}
+
+	std::vector<String> LoadLinesFromFile(String filepath) {
+		std::ifstream file;
+		String line;
+		std::vector<String> lines;
+		file.open(filepath);
+
+		if (file.is_open()) {
+			while (std::getline(file, line)) lines.push_back(line);
+			file.close();
+		}
+		else {
+			Logger::LogLine("File Loader", String("Failed to read file from: ") + filepath);
+		}
+
+		return lines;
 	}
 
 	bool SaveToFile(String filepath, String text) {
@@ -31,7 +48,7 @@ namespace File {
 			file.close();
 		}
 		catch (std::ofstream::failure e) {
-			Logger::LogLine("File Loader", std::string("Failed to save to file at: ") + filepath + '\n' + e.what());
+			Logger::LogLine("File Loader", String("Failed to save to file at: ") + filepath + '\n' + e.what());
 			success = false;
 		}
 

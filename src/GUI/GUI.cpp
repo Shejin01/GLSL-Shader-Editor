@@ -25,6 +25,9 @@ void GUI::Init(Window* window) {
 		"	gl_FragColor = vec4(a + b * cos(6.283185 * (c * t + d)), 1.0f);\n"
 		"}\n";
 	data.paletteShader.Compile(vertexShaderCode.c_str(), fPaletteShaderCode.c_str());
+
+	std::vector<String> recentFiles = File::LoadLinesFromFile("recent.txt");
+	if (recentFiles.size() != 0) data.recentFiles = recentFiles;
 }
 void GUI::NewFrame() {
 	ImGui_ImplOpenGL3_NewFrame();
@@ -37,10 +40,22 @@ void GUI::Process(GUIContext* context) {
 		fdata = FrameData();
 		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
-				if (ImGui::MenuItem("New")) context->editor->SetText(String());
+				if (ImGui::MenuItem("New")) {
+					context->editor->SetText(String());
+					data.loadedShaderFilepath = "";
+				}
 				if (ImGui::MenuItem("Save", "Ctrl+S")) fdata.saveFile = true;
 				if (ImGui::MenuItem("Save As", "Ctrl+Shift+S")) fdata.saveAsFile = true;
 				if (ImGui::MenuItem("Open", "Ctrl+O")) fdata.loadFile = true;
+				if (ImGui::BeginMenu("Recent Files")) {
+					for (int i = data.recentFiles.size()-1; i >= 0; i--) {
+						if (ImGui::MenuItem(data.recentFiles[i].c_str())) {
+							context->editor->SetText(File::LoadFromFile(data.recentFiles[i]));
+							data.loadedShaderFilepath = data.recentFiles[i];
+						}
+					}
+					ImGui::EndMenu();
+				}
 				ImGui::Text("Press ESC to Quit");
 				ImGui::EndMenu();
 			}
@@ -88,7 +103,8 @@ void GUI::Process(GUIContext* context) {
 		bool isCtrlHeld = input.GetKeyHeld(GLFW_KEY_LEFT_CONTROL) || input.GetKeyHeld(GLFW_KEY_RIGHT_CONTROL);
 		bool isShiftHeld = input.GetKeyHeld(GLFW_KEY_LEFT_SHIFT) || input.GetKeyHeld(GLFW_KEY_RIGHT_SHIFT);
 		if (fdata.saveFile || (isCtrlHeld && !isShiftHeld && input.GetKeyPressed(GLFW_KEY_S))) {
-			File::SaveToFile(context->shaderFilepath, context->editor->GetText());
+			File::SaveToFile(data.loadedShaderFilepath, context->editor->GetText());
+			context->editor->GetText();
 			Logger::LogLine("Code Editor", "File Saved");
 		}
 		if (fdata.saveAsFile || (isCtrlHeld && isShiftHeld && input.GetKeyPressed(GLFW_KEY_S))) ImGui::OpenPopup("Save As File");
@@ -112,6 +128,9 @@ void GUI::Process(GUIContext* context) {
 			ImGui::SetItemDefaultFocus();
 			if (ImGui::Button("Load")) {
 				context->editor->SetText(File::LoadFromFile(context->shaderFilepath));
+				data.loadedShaderFilepath = context->shaderFilepath;
+				data.recentFiles.push_back(data.loadedShaderFilepath);
+				if (data.recentFiles.size() > 5) data.recentFiles.erase(data.recentFiles.begin());
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
@@ -120,6 +139,7 @@ void GUI::Process(GUIContext* context) {
 		}
 
 		ImGui::Text("FPS: %.3f (%.2fms)", ImGui::GetIO().Framerate, ImGui::GetIO().DeltaTime*1000.0f);
+		ImGui::Text((String("Filepath: ") + data.loadedShaderFilepath).c_str());
 		ImGui::Text("Total Lines: %i, Line: %i | Col: %i", context->editor->GetTotalLines(), context->editor->GetCursorPosition().mLine, context->editor->GetCursorPosition().mColumn);
 		context->editor->Render("Code", ImVec2(), true);	
 	}
@@ -254,6 +274,12 @@ void GUI::Render() {
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 void GUI::Shutdown() {
+	String text = "";
+	for (auto& filepath : data.recentFiles) {
+		text.append(filepath + '\n');
+	}
+	File::SaveToFile("recent.txt", text);
+
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
