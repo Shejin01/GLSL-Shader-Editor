@@ -223,7 +223,6 @@ void TextEditor::DeleteRange(const Coordinates & aStart, const Coordinates & aEn
 {
 	assert(aEnd >= aStart);
 	assert(!mReadOnly);
-
 	//printf("D(%d.%d)-(%d.%d)\n", aStart.mLine, aStart.mColumn, aEnd.mLine, aEnd.mColumn);
 
 	if (aEnd == aStart)
@@ -1619,7 +1618,6 @@ void TextEditor::MoveLeft(int aAmount, bool aSelect, bool aWordMode)
 	else
 		mInteractiveStart = mInteractiveEnd = mState.mCursorPosition;
 	SetSelection(mInteractiveStart, mInteractiveEnd, aSelect && aWordMode ? SelectionMode::Word : SelectionMode::Normal);
-
 	EnsureCursorVisible();
 }
 

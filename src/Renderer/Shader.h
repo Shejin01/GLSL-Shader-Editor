@@ -2,12 +2,12 @@
 
 #include <glad/glad.h>
 
-#include "../Math/Precision.h"
-#include "../Logger/Logger.h"
-#include "../File Loader/FileLoader.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "../File Loader/FileLoader.h"
+#include "../Logger/Logger.h"
+#include "../Math/Precision.h"
 
 class Shader {
 private:
@@ -30,5 +30,4 @@ public:
 	void SetMat4(String name, glm::mat4 value);
 
 	void Delete();
-	~Shader();
 };

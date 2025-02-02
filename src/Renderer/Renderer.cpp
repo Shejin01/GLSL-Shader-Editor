@@ -8,7 +8,7 @@ void Renderer::Clear(float r, float g, float b, float a) {
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-Renderer::Renderer() {
+void Renderer::Init() {
 	std::vector<float> quadVertices = {
 		-1.0f, -1.0f,	0.0f, 0.0f,
 		 1.0f, -1.0f,	1.0f, 0.0f,
@@ -19,6 +19,7 @@ Renderer::Renderer() {
 		-1.0f, -1.0f,	0.0f, 0.0f
 	};
 
+	quadVao.Generate();
 	quadVao.Bind();
 	quadVbo = VBO(&quadVertices);
 	quadVbo.Bind();
@@ -34,7 +35,7 @@ void Renderer::DrawQuad() {
 	quadVao.Unbind();
 }
 
-Renderer::~Renderer() {
+void Renderer::Delete() {
 	quadVao.Delete();
 	quadVbo.Delete();
 }

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <glad/glad.h>
-#include "Shader.h"
 #include "Buffers/VAO.h"
 #include "Buffers/VBO.h"
+#include "Shader.h"
 
 class Renderer {
 private:
@@ -13,7 +13,7 @@ public:
 	void Clear(glm::vec4 color);
 	void Clear(float r, float g, float b, float a);
 
-	Renderer();
+	void Init();
 	void DrawQuad();
-	~Renderer();
+	void Delete();
 };

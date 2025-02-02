@@ -35,8 +35,7 @@ void GUI::NewFrame() {
 	ImGui::NewFrame();
 }
 void GUI::Process(GUIContext* context) {
-	ImGuiWindowFlags flags = ImGuiWindowFlags_MenuBar;
-	if (ImGui::Begin("Code Editor", 0, flags)) {
+	if (ImGui::Begin("Code Editor", 0, ImGuiWindowFlags_MenuBar)) {
 		fdata = FrameData();
 		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
@@ -56,7 +55,7 @@ void GUI::Process(GUIContext* context) {
 					}
 					ImGui::EndMenu();
 				}
-				ImGui::Text("Press ESC to Quit");
+				if (ImGui::MenuItem("Exit", "Escape")) fdata.exit = true;
 				ImGui::EndMenu();
 			}
 
@@ -100,43 +99,31 @@ void GUI::Process(GUIContext* context) {
 		}
 
 		Input input = *context->input;
-		bool isCtrlHeld = input.GetKeyHeld(GLFW_KEY_LEFT_CONTROL) || input.GetKeyHeld(GLFW_KEY_RIGHT_CONTROL);
-		bool isShiftHeld = input.GetKeyHeld(GLFW_KEY_LEFT_SHIFT) || input.GetKeyHeld(GLFW_KEY_RIGHT_SHIFT);
-		if (fdata.saveFile || (isCtrlHeld && !isShiftHeld && input.GetKeyPressed(GLFW_KEY_S))) {
+		bool ctrl = input.GetKeyHeld(GLFW_KEY_LEFT_CONTROL) || input.GetKeyHeld(GLFW_KEY_RIGHT_CONTROL);
+		bool shift = input.GetKeyHeld(GLFW_KEY_LEFT_SHIFT) || input.GetKeyHeld(GLFW_KEY_RIGHT_SHIFT);
+		if (ctrl) {
+			if (input.GetKeyPressed(GLFW_KEY_S)) {
+				if (shift) fdata.saveAsFile = true;
+				else fdata.saveFile = true;
+			}
+			if (input.GetKeyPressed(GLFW_KEY_O)) fdata.loadFile = true;
+		}
+		if (input.GetKeyPressed(GLFW_KEY_F5)) fdata.compile = true;
+		if (input.GetKeyPressed(GLFW_KEY_ESCAPE)) fdata.exit = true;
+
+		if (fdata.saveFile) {
 			File::SaveToFile(data.loadedShaderFilepath, context->editor->GetText());
 			context->editor->GetText();
 			Logger::LogLine("Code Editor", "File Saved");
 		}
-		if (fdata.saveAsFile || (isCtrlHeld && isShiftHeld && input.GetKeyPressed(GLFW_KEY_S))) ImGui::OpenPopup("Save As File");
-		if (fdata.loadFile || (isCtrlHeld && input.GetKeyPressed(GLFW_KEY_O))) ImGui::OpenPopup("Open File");
-		if (fdata.compile || input.GetKeyPressed(GLFW_KEY_F5)) context->shader->Compile(context->vertexShaderCode, context->editor->GetText());
+		if (fdata.saveAsFile) ImGui::OpenPopup("Save As File");
+		if (fdata.loadFile) ImGui::OpenPopup("Open File");
+		if (fdata.compile) context->shader->Compile(context->vertexShaderCode, context->editor->GetText());
+		if (fdata.exit) ImGui::OpenPopup("Exit Popup");
 
-		if (ImGui::BeginPopupModal("Save As File", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::InputText("File Path", &context->shaderFilepath[0], 256);
-			ImGui::SetItemDefaultFocus();
-			if (ImGui::Button("Save")) {
-				File::SaveToFile(context->shaderFilepath, context->editor->GetText());
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
-			ImGui::EndPopup();
-		}
-
-		if (ImGui::BeginPopupModal("Open File", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::InputText("File Path", &context->shaderFilepath[0], 256);
-			ImGui::SetItemDefaultFocus();
-			if (ImGui::Button("Load")) {
-				context->editor->SetText(File::LoadFromFile(context->shaderFilepath));
-				data.loadedShaderFilepath = context->shaderFilepath;
-				data.recentFiles.push_back(data.loadedShaderFilepath);
-				if (data.recentFiles.size() > 5) data.recentFiles.erase(data.recentFiles.begin());
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
-			ImGui::EndPopup();
-		}
+		OpenSaveAsPopup(context);
+		OpenLoadFilePopup(context);
+		OpenExitPopup(context);
 
 		ImGui::Text("FPS: %.3f (%.2fms)", ImGui::GetIO().Framerate, ImGui::GetIO().DeltaTime*1000.0f);
 		ImGui::Text((String("Filepath: ") + data.loadedShaderFilepath).c_str());
@@ -155,7 +142,7 @@ void GUI::ShowColorPicker(GUIContext* context, bool* p_open) {
 	if (ImGui::Begin("Color Picker", p_open)) {
 		ImGui::ColorPicker4("Color", data.color);
 		if (ImGui::Button("Copy Color As GLSL Code")) {
-			String string = "vec3 color = vec3(" + std::to_string(data.color[0] ) + ", " + std::to_string(data.color[1]) + ", " + std::to_string(data.color[2]) + ");";
+			String string = "vec3(" + std::to_string(data.color[0] ) + ", " + std::to_string(data.color[1]) + ", " + std::to_string(data.color[2]) + ");";
 			ImGui::SetClipboardText(string.c_str());
 		}
 	}
@@ -267,6 +254,50 @@ void GUI::ShowCameraInfoOverlay(GUIContext* context, bool* p_open) {
 	}
 	style.WindowRounding = 0.0f;
 	ImGui::End();
+}
+
+void GUI::OpenSaveAsPopup(GUIContext* context) {
+	if (ImGui::BeginPopupModal("Save As File", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::InputText("File Path", &context->shaderFilepath[0], 256);
+		ImGui::SetItemDefaultFocus();
+		if (ImGui::Button("Save")) {
+			File::SaveToFile(context->shaderFilepath, context->editor->GetText());
+			data.loadedShaderFilepath = context->shaderFilepath;
+			data.recentFiles.push_back(data.loadedShaderFilepath);
+			if (data.recentFiles.size() > 5) data.recentFiles.erase(data.recentFiles.begin());
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
+}
+void GUI::OpenLoadFilePopup(GUIContext* context) {
+	if (ImGui::BeginPopupModal("Open File", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::InputText("File Path", &context->shaderFilepath[0], 256);
+		ImGui::SetItemDefaultFocus();
+		if (ImGui::Button("Load")) {
+			context->editor->SetText(File::LoadFromFile(context->shaderFilepath));
+			data.loadedShaderFilepath = context->shaderFilepath;
+			data.recentFiles.push_back(data.loadedShaderFilepath);
+			if (data.recentFiles.size() > 5) data.recentFiles.erase(data.recentFiles.begin());
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
+}
+void GUI::OpenExitPopup(GUIContext* context) {
+	if (ImGui::BeginPopupModal("Exit Popup", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("Are you sure you want to exit?");
+		if (ImGui::Button("Yes")) {
+			context->window->SetWindowShouldClose(true);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("No")) ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
 }
 
 void GUI::Render() {

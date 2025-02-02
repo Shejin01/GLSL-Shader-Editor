@@ -15,26 +15,31 @@ void Window::Init() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
-Window::Window(uint32 width, uint32 height, String title) 
-	: width(width), height(height), title(title) {
+Window::Window() : width(0), height(0), title("") {}
+bool Window::CreateWindow(uint32 width, uint32 height, String title) {
+	this->width = width;
+	this->height = height;
+	this->title = title;
+
 	ID = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (ID == nullptr) {
 		Logger::LogLine("Window", "Failed to create Window.");
 		glfwTerminate();
-		return;
+		return false;
 	}
 	glfwMakeContextCurrent(ID);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		Logger::LogLine("GLAD", "Failed to load GLAD.");
 		glfwTerminate();
-		return;
+		return false;
 	}
 
 	instances.push_back(this);
 
 	SetSize(width, height);
 	glfwSetFramebufferSizeCallback(ID, framebuffer_size_callback);
+	return true;
 }
 void Window::SwapBuffers() {
 	glfwSwapBuffers(ID);
@@ -72,7 +77,4 @@ void Window::SetTitle(String title) {
 
 void Window::Delete() {
 	glfwTerminate();
-}
-Window::~Window() {
-	Delete();
 }

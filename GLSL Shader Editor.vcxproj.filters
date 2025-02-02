@@ -156,6 +156,12 @@
     <ClInclude Include="src\Framebuffer\Framebuffer.h">
       <Filter>Header Files\Framebuffer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -226,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="src\Framebuffer\Framebuffer.cpp">
       <Filter>Source Files\Framebuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Application.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,34 +3,35 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-#include "../Window/Window.h"
 #include "TextEditor.h"
-#include "../Window/Input.h"
-#include "../Renderer/Shader.h"
 #include "../Camera/Camera.h"
-#include "../Texture/TextureManager.h"
 #include "../Framebuffer/Framebuffer.h"
 #include "../Renderer/Renderer.h"
+#include "../Renderer/Shader.h"
+#include "../Texture/TextureManager.h"
+#include "../Window/Input.h"
+#include "../Window/Window.h"
 
 struct GUIContext {
-	TextEditor* editor;
-	Input* input;
-	Shader* shader;
-	Camera* camera;
-	String shaderFilepath = String(256, NULL);
-	String vertexShaderCode;
-	Renderer* renderer;
-	Window* window;
+	Camera*		camera;
+	TextEditor*	editor;
+	Input*		input;
+	Renderer*	renderer;
+	Shader*		shader;
+	String		shaderFilepath = String(256, NULL);
+	String		vertexShaderCode;
+	Window*		window;
 };
 
 class GUI {
 private:
 	struct FrameData {
+		bool compile = false;
+		bool loadFile = false;
+		bool loadTexture = false;
 		bool saveFile = false;
 		bool saveAsFile = false;
-		bool loadFile = false;
-		bool compile = false;
-		bool loadTexture = false;
+		bool exit = false;
 	};
 	struct Data {
 		bool showPalettePicker = false;
@@ -47,9 +48,9 @@ private:
 		Shader paletteShader;
 
 		float colorPalette[12] = {
-			0.5, 0.5, 0.5,
-			0.5, 0.5, 0.5,
-			1.0, 1.0, 1.0,
+			0.50, 0.50, 0.50,
+			0.50, 0.50, 0.50,
+			1.00, 1.00, 1.00,
 			0.00, 0.33, 0.67
 		};
 		float color[4];
@@ -62,6 +63,10 @@ private:
 	static void ShowPalettePicker(GUIContext* context, bool* p_open);
 	static void ShowTextureBrowser(GUIContext* context, bool* p_open);
 	static void ShowCameraInfoOverlay(GUIContext* context, bool* p_open);
+
+	static void OpenSaveAsPopup(GUIContext* context);
+	static void OpenLoadFilePopup(GUIContext* context);
+	static void OpenExitPopup(GUIContext* context);
  public:
 	static void Init(Window* window);
 	static void NewFrame();

@@ -25,7 +25,9 @@ void Input::scroll_callback(GLFWwindow* window, double xOffset, double yOffset) 
 	}
 }
 
-Input::Input(Window* window) : window(window) {
+Input::Input() {}
+void Input::CreateInstance(Window* window) {
+	this->window = window;
 	instances.push_back(this);
 	PollWindow(window);
 }

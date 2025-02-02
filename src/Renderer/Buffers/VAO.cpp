@@ -1,6 +1,6 @@
 #include "VAO.h"
 
-VAO::VAO() {
+void VAO::Generate() {
 	glGenVertexArrays(1, &ID);
 }
 void VAO::LinkAttrib(uint32 location, uint32 size, uint32 stride, uint32 offset) {
