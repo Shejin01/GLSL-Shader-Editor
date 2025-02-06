@@ -13,14 +13,14 @@
 #include "../Window/Window.h"
 
 struct GUIContext {
-	Camera*		camera;
-	TextEditor*	editor;
-	Input*		input;
-	Renderer*	renderer;
-	Shader*		shader;
-	String		shaderFilepath = String(256, NULL);
-	String		vertexShaderCode;
-	Window*		window;
+	Camera* camera;
+	TextEditor* editor;
+	Input* input;
+	Renderer* renderer;
+	Shader* shader;
+	String shaderFilepath = String(256, NULL);
+	String vertexShaderCode;
+	Window* window;
 };
 
 class GUI {

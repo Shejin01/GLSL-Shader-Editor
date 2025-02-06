@@ -10,9 +10,10 @@ void Application::Run() {
 void Application::Init() {
 	Window::Init();
 
+	// TODO: Add Option to Fullscreen (and also windowed) app in View menu
 	// Create Window and Input Manager
 	window.CreateWindow(config.WIDTH, config.HEIGHT, config.TITLE);
-	window.Maximize();
+	window.WindowedFullscreen();
 	input.CreateInstance(&window);
 	GUI::Init(&window);
 
@@ -46,9 +47,9 @@ void Application::Init() {
 }
 
 void Application::Update() {
-	uint32		iFrame = 0;
-	glm::vec4	iMouse;
-	float		prevTime = 0.0f;
+	uint32 iFrame = 0;
+	glm::vec4 iMouse;
+	float prevTime = 0.0f;
 	while (!window.WindowShouldClose()) {
 		// Calculate Delta Time
 		float crntTime = glfwGetTime();

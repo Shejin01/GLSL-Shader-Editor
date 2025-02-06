@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace File {
-	String				LoadFromFile(String filepath);
+	String LoadFromFile(String filepath);
 	std::vector<String> LoadLinesFromFile(String filepath);
-	bool				SaveToFile(String filepath, String text);
+	bool SaveToFile(String filepath, String text);
 }

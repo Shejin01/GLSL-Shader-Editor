@@ -7,7 +7,7 @@ glm::mat4 Camera::GetViewMatrix() const {
 	return glm::lookAt(position, position + front, up);
 }
 void Camera::ProcessInputs(Input* input, float dt) {
-	if (input->GetKeyPressed(GLFW_KEY_C) && !(ImGui::GetIO().WantCaptureKeyboard || ImGui::GetIO().WantCaptureMouse)) {
+	if (input->GetKeyPressed(GLFW_KEY_F2) && !ImGui::GetIO().WantCaptureKeyboard && !ImGui::GetIO().WantCaptureMouse) {
 		if (!cursorDisabled) {
 			input->SetCursorMode(GLFW_CURSOR_DISABLED);
 			cursorDisabled = true;

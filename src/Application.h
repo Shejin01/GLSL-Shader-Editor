@@ -19,14 +19,14 @@ public:
 	Application(Config& config);
 	void Run();
 private:
-	Camera		camera;
-	Config		config;
-	GUIContext	context;
-	TextEditor	editor;
-	Input		input;
-	Renderer	renderer;
-	Shader		shader;
-	Window		window;
+	Camera camera;
+	Config config;
+	GUIContext context;
+	TextEditor editor;
+	Input input;
+	Renderer renderer;
+	Shader shader;
+	Window window;
 
 	void Init();
 	void Update();

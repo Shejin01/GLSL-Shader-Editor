@@ -75,6 +75,12 @@ void GUI::Process(GUIContext* context) {
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("View")) {
+				if (ImGui::MenuItem("Borderless Fullscreen")) context->window->BorderlessFullscreen();
+				if (ImGui::MenuItem("Windowed Fullscreen")) context->window->WindowedFullscreen();
+				ImGui::EndMenu();
+			}
+
 			if (ImGui::BeginMenu("Build")) {
 				if (ImGui::MenuItem("Compile Code", "F5")) fdata.compile = true;
 				ImGui::EndMenu();
@@ -89,7 +95,7 @@ void GUI::Process(GUIContext* context) {
 			}
 				
 			if (ImGui::BeginMenu("Help")) {
-				ImGui::Text("Press C while the UI is deselected to enable Camera Mode.");
+				ImGui::Text("Press F2 to enable Camera Mode.");
 				ImGui::Text("WASD - Camera Movement");
 				ImGui::Text("Scroll Wheel - Change Camera Speed (Capped between 0.1 and 100.0)");
 				ImGui::EndMenu();

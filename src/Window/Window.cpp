@@ -21,6 +21,9 @@ bool Window::CreateWindow(uint32 width, uint32 height, String title) {
 	this->height = height;
 	this->title = title;
 
+	monitor = glfwGetPrimaryMonitor();
+	mode = glfwGetVideoMode(monitor);
+
 	ID = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (ID == nullptr) {
 		Logger::LogLine("Window", "Failed to create Window.");
@@ -52,8 +55,14 @@ void Window::SetWindowShouldClose(bool value) {
 	glfwSetWindowShouldClose(ID, value);
 }
 
-void Window::Maximize() {
+void Window::BorderlessFullscreen() {
+	glfwSetWindowMonitor(ID, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+	glfwSwapInterval(1);
+}
+void Window::WindowedFullscreen() {
+	glfwSetWindowMonitor(ID, NULL, 0, 0, width, height, 0);
 	glfwMaximizeWindow(ID);
+	glfwSwapInterval(0);
 }
 void Window::Minimize() {
 	glfwIconifyWindow(ID);
