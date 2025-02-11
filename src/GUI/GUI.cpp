@@ -35,6 +35,8 @@ void GUI::NewFrame() {
 	ImGui::NewFrame();
 }
 void GUI::Process(GUIContext* context) {
+	if (context->input->GetKeyPressed(GLFW_KEY_F3)) data.showGUI = !data.showGUI;
+	if (!data.showGUI) return;
 	if (ImGui::Begin("Code Editor", 0, ImGuiWindowFlags_MenuBar)) {
 		fdata = FrameData();
 		if (ImGui::BeginMenuBar()) {
@@ -78,6 +80,7 @@ void GUI::Process(GUIContext* context) {
 			if (ImGui::BeginMenu("View")) {
 				if (ImGui::MenuItem("Borderless Fullscreen")) context->window->BorderlessFullscreen();
 				if (ImGui::MenuItem("Windowed Fullscreen")) context->window->WindowedFullscreen();
+				if (ImGui::MenuItem("Show GUI", 0, &data.showGUI));
 				ImGui::EndMenu();
 			}
 
@@ -191,12 +194,14 @@ void GUI::ShowTextureBrowser(GUIContext* context, bool* p_open) {
 		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("Load Texture")) fdata.loadTexture = true;
+				if (ImGui::MenuItem("Load Cubemap")) fdata.loadCubemap = true;
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
 		}
 
 		if (fdata.loadTexture) ImGui::OpenPopup("Load Texture");
+		if (fdata.loadCubemap) ImGui::OpenPopup("Load Cubemap");
 
 		// Load Texture Popup
 		if (ImGui::BeginPopupModal("Load Texture", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
@@ -211,36 +216,100 @@ void GUI::ShowTextureBrowser(GUIContext* context, bool* p_open) {
 			if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
 			ImGui::EndPopup();
 		}
+		// Load Cubemap Popup
+		if (ImGui::BeginPopupModal("Load Cubemap", 0, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::InputText("Right Texture Path", &data.cubemapFilepaths[0][0], 256);
+			ImGui::InputText("Left Texture Path", &data.cubemapFilepaths[1][0], 256);
+			ImGui::InputText("Top Texture Path", &data.cubemapFilepaths[2][0], 256);
+			ImGui::InputText("Bottom Texture Path", &data.cubemapFilepaths[3][0], 256);
+			ImGui::InputText("Front Texture Path", &data.cubemapFilepaths[4][0], 256);
+			ImGui::InputText("Back Texture Path", &data.cubemapFilepaths[5][0], 256);
+
+			ImGui::InputText("Cubemap Name", &data.cubemapName[0], 256);
+			ImGui::SetItemDefaultFocus();
+			if (ImGui::Button("Load")) {
+				CubemapManager::AddCubemap(data.cubemapName, data.cubemapFilepaths);
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Close")) ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
 
 		// Textures Section
 		float windowHalfWidth = (ImGui::GetWindowWidth() - 25) * 0.5;
-		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-		ImGui::BeginChild("Textures", ImVec2(windowHalfWidth, 0), ImGuiChildFlags_Borders);
-		int i = 0;
-		for (auto iter : TextureManager::textures) {
-			if (ImGui::ImageButton(iter.first.c_str(), iter.second.ID, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0))) {
-				data.selectedTexture = iter.first;
+		if (ImGui::BeginChild("Items", ImVec2(windowHalfWidth, 0))) {
+			if (ImGui::BeginTabBar("Tabs")) {
+				if (ImGui::BeginTabItem("Textures")) {
+					ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);	
+					if (ImGui::BeginChild("TexturesImage", ImVec2(windowHalfWidth, 0), ImGuiChildFlags_Borders)) {
+						uint32 i = 0;
+						for (auto &iter : TextureManager::textures) {
+							if (ImGui::ImageButton(iter.first.c_str(), iter.second.ID, ImVec2(100, 100))) {
+								data.selectedItem = iter.first;
+								data.selectedItemType = 1;
+							}
+							ImGui::SameLine();
+							i++;
+							if (i % (uint32)(std::fmax((windowHalfWidth / 116), 1)) == 0) ImGui::NewLine();
+						}
+						ImGui::EndChild();
+					}
+					ImGui::PopStyleVar();
+					ImGui::EndTabItem();
+				}
+				if (ImGui::BeginTabItem("Cubemaps")) {
+					if (ImGui::BeginChild("CubemapsImage", ImVec2(windowHalfWidth, 0), ImGuiChildFlags_Borders)) {
+						for (auto& iter : CubemapManager::cubemaps) {
+							if (ImGui::Selectable(iter.first.c_str(), data.selectedItem == iter.first)) {
+								data.selectedItem = iter.first;
+								data.selectedItemType = 2;
+							}
+						}
+						ImGui::EndChild();
+					}
+					ImGui::EndTabItem();
+				}
+				ImGui::EndTabBar();
 			}
-			ImGui::SameLine();
-			i++;
-			if (i % (int)(std::fmax((windowHalfWidth / 116), 1)) == 0) ImGui::NewLine();
+			ImGui::EndChild();
 		}
-		ImGui::EndChild();
 		ImGui::SameLine();
 
 		// Properties Section
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
 		ImGui::BeginChild("Properties", ImVec2(windowHalfWidth, 0), ImGuiChildFlags_Borders);
-		if (data.selectedTexture != "") {
-			Texture* texture = TextureManager::GetTexture(data.selectedTexture);
-			ImGui::Image(texture->ID, ImVec2(windowHalfWidth-15, windowHalfWidth-15), ImVec2(0, 1), ImVec2(1, 0));
-			ImGui::Text(("Selected Texture: " + data.selectedTexture).c_str());
-			ImGui::Text(("Texture Path: " + texture->GetTexturePath()).c_str());
-			ImGui::Text("Resolution: %ix%i", texture->GetWidth(), texture->GetHeight());
-			ImGui::Text("Number of Color Channels: %i", texture->GetNumberOfChannels());
-			if (ImGui::Button("Delete")) {
-				TextureManager::DeleteTexture(data.selectedTexture);
-				data.selectedTexture = "";
+		if (data.selectedItem != "") {
+			if (data.selectedItemType == 1) {
+				Texture* texture = TextureManager::GetTexture(data.selectedItem);
+				ImGui::Image(texture->ID, ImVec2(windowHalfWidth - 15, windowHalfWidth - 15));
+				ImGui::Text(("Selected Texture: " + data.selectedItem).c_str());
+				ImGui::Text(("Texture Path: " + texture->GetTexturePath()).c_str());
+				ImGui::Text("Resolution: %ix%i", texture->GetWidth(), texture->GetHeight());
+				ImGui::Text("Number of Color Channels: %i", texture->GetNumberOfChannels());
+				if (ImGui::Button("Delete")) {
+					TextureManager::DeleteTexture(data.selectedItem);
+					data.selectedItem = "";
+					data.selectedItemType = 0;
+				}
 			}
+			else if (data.selectedItemType == 2) {
+				Cubemap* cubemap = CubemapManager::GetCubemap(data.selectedItem);
+				ImGui::Text(("Selected Cubemap: " + data.selectedItem).c_str());
+				std::vector<String> filepaths = cubemap->GetTexturePaths();
+				ImGui::Text(("Right Texture Path: " + filepaths[0]).c_str());
+				ImGui::Text(("Left Texture Path: " + filepaths[1]).c_str());
+				ImGui::Text(("Top Texture Path: " + filepaths[2]).c_str());
+				ImGui::Text(("Bottom Texture Path: " + filepaths[3]).c_str());
+				ImGui::Text(("Front Texture Path: " + filepaths[4]).c_str());
+				ImGui::Text(("Back Texture Path: " + filepaths[5]).c_str());
+				if (ImGui::Button("Delete")) {
+					CubemapManager::DeleteCubemap(data.selectedItem);
+					data.selectedItem = "";
+					data.selectedItemType = 0;
+				}
+			}
+
 		}
 		ImGui::EndChild();
 		ImGui::PopStyleVar();

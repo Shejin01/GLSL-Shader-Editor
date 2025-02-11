@@ -10,7 +10,8 @@ void Application::Run() {
 void Application::Init() {
 	Window::Init();
 
-	// TODO: Add Option to Fullscreen (and also windowed) app in View menu
+	// TODO: Exit Popup only appears when Code Editor Window is not hidden
+
 	// Create Window and Input Manager
 	window.CreateWindow(config.WIDTH, config.HEIGHT, config.TITLE);
 	window.WindowedFullscreen();
@@ -29,7 +30,27 @@ void Application::Init() {
 	editor.SetShowWhitespaces(false);
 
 	// Load Example Textures
-	stbi_set_flip_vertically_on_load(true);
+	std::vector<String> texturePaths = {
+		"assets/Cubemaps/right.jpg",
+		"assets/Cubemaps/left.jpg",
+		"assets/Cubemaps/top.jpg",
+		"assets/Cubemaps/bottom.jpg",
+		"assets/Cubemaps/front.jpg",
+		"assets/Cubemaps/back.jpg"
+	};
+	std::vector<String> texturePaths2 = {
+		"assets/Cubemaps/milkyway_right.png",
+		"assets/Cubemaps/milkyway_left.png",
+		"assets/Cubemaps/milkyway_top.png",
+		"assets/Cubemaps/milkyway_bottom.png",
+		"assets/Cubemaps/milkyway_front.png",
+		"assets/Cubemaps/milkyway_back.png"
+	};
+	cubemap = Cubemap(texturePaths);
+	CubemapManager::AddCubemap("cubemap0", &cubemap);
+	CubemapManager::AddCubemap("milkyway", texturePaths2);
+
+	//stbi_set_flip_vertically_on_load(true);
 	Texture texture("assets/Textures/container_diffuse.png");
 	TextureManager::AddTexture("texture0", &texture);
 	TextureManager::AddTexture("texture1", "assets/Textures/pepe.jpg");
@@ -50,6 +71,7 @@ void Application::Update() {
 	uint32 iFrame = 0;
 	glm::vec4 iMouse;
 	float prevTime = 0.0f;
+
 	while (!window.WindowShouldClose()) {
 		// Calculate Delta Time
 		float crntTime = glfwGetTime();
@@ -102,7 +124,9 @@ void Application::Render() {
 	renderer.Clear(0.0, 0.0, 0.0, 1.0);
 	GUI::NewFrame();
 	TextureManager::BindAllTextures(&shader);
+	CubemapManager::BindAllCubemaps(&shader);
 	renderer.DrawQuad();
+
 	GUI::Process(&context);
 	GUI::Render();
 	window.SwapBuffers();
@@ -111,6 +135,7 @@ void Application::Render() {
 void Application::Shutdown() {
 	GUI::Shutdown();
 	TextureManager::DeleteAllTextures();
+	CubemapManager::DeleteAllCubemaps();
 	window.Delete();
 	shader.Delete();
 	renderer.Delete();

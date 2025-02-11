@@ -8,9 +8,11 @@
 #include "../Framebuffer/Framebuffer.h"
 #include "../Renderer/Renderer.h"
 #include "../Renderer/Shader.h"
+#include "../Texture/CubemapManager.h"
 #include "../Texture/TextureManager.h"
 #include "../Window/Input.h"
 #include "../Window/Window.h"
+
 
 struct GUIContext {
 	Camera* camera;
@@ -29,6 +31,7 @@ private:
 		bool compile = false;
 		bool loadFile = false;
 		bool loadTexture = false;
+		bool loadCubemap = false;
 		bool saveFile = false;
 		bool saveAsFile = false;
 		bool exit = false;
@@ -38,10 +41,14 @@ private:
 		bool showColorPicker = false;
 		bool showTextureBrowser = false;
 		bool showCameraInfoOverlay = false;
+		bool showGUI = true;
 
-		String selectedTexture = "";
+		String selectedItem = "";
+		uint32 selectedItemType = 0;
 		String textureFilepath = String(256, NULL);
 		String textureName = String(256, NULL);
+		std::vector<String> cubemapFilepaths{6, String(256, NULL) };
+		String cubemapName = String(256, NULL);
 		String loadedShaderFilepath = "assets/Shaders/shader.fs";
 		std::vector<String> recentFiles = { "assets/Shaders/shader.fs" };
 

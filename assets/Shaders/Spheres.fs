@@ -25,6 +25,8 @@ uniform Camera camera;
 uniform Mouse mouse;
 //*************************//
 
+uniform samplerCube milkyway;
+
 struct Material {
 	vec3 diffuse;
 	vec3 specular;
@@ -176,7 +178,12 @@ void main() {
 	if (co.sd < 0.001) {
 		color = calculateLighting(point, co.material);
 	}
+	else {
+		vec3 dir = normalize(point - camera.iCameraPos);
+		color = texture(milkyway, dir).rgb;
+		color *= 0.8f;
+		color = pow(color, vec3(2.2));
+	}
 
 	gl_FragColor = vec4(color, 1.0f);
 }
-

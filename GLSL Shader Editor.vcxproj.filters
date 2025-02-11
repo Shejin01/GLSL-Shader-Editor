@@ -162,6 +162,12 @@
     <ClInclude Include="src\Config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Texture\Cubemap.h">
+      <Filter>Header Files\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Texture\CubemapManager.h">
+      <Filter>Header Files\Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c">
@@ -235,6 +241,12 @@
     </ClCompile>
     <ClCompile Include="src\Application.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture\Cubemap.cpp">
+      <Filter>Source Files\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture\CubemapManager.cpp">
+      <Filter>Source Files\Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

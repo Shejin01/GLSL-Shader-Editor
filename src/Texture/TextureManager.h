@@ -14,7 +14,7 @@ public:
 	static void AddTexture(String name, Texture* texture);
 	static bool AddTexture(String name, String texturePath);
 	static Texture* GetTexture(String name);
-	static void BindTexture(Shader* shader, String name, int textureUnit);
+	static void BindTexture(Shader* shader, String name, uint32 textureUnit);
 	static void BindAllTextures(Shader* shader);
 	static void DeleteTexture(String name);
 	static void DeleteAllTextures();

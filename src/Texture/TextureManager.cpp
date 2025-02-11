@@ -6,22 +6,22 @@ void TextureManager::AddTexture(String name, Texture* texture) {
 	textures[name] = *texture;
 }
 bool TextureManager::AddTexture(String name, String texturePath) {
-	bool success = false;
-	Texture texture = Texture(texturePath.c_str(), &success);
+	bool success;
+	Texture texture(texturePath.c_str(), &success);
 	if (success) textures.insert({ name, texture });
 	return success;
 }
 Texture* TextureManager::GetTexture(String name) {
 	return &textures[name];
 }
-void TextureManager::BindTexture(Shader* shader, String name, int textureUnit) {
-	GetTexture(name)->Bind(textureUnit);
+void TextureManager::BindTexture(Shader* shader, String name, uint32 textureUnit) {
+	textures[name].Bind(textureUnit);
 	shader->SetInt(name, textureUnit);
 }
 void TextureManager::BindAllTextures(Shader* shader) {
-	int i = 0;
-	for (auto& iter : textures) {
-		BindTexture(shader, iter.first, i);
+	uint32 i = 0;
+	for (auto& pair : textures) {
+		BindTexture(shader, pair.first, i);
 		i++;
 	}
 }

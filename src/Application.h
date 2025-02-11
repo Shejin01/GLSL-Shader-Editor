@@ -10,6 +10,7 @@
 #include "Renderer/Buffers/VBO.h"
 #include "Renderer/Renderer.h"
 #include "Texture/Texture.h"
+#include "Texture/CubemapManager.h"
 #include "Texture/TextureManager.h"
 #include "Window/Input.h"
 #include "Window/Window.h"
@@ -27,6 +28,7 @@ private:
 	Renderer renderer;
 	Shader shader;
 	Window window;
+	Cubemap cubemap;
 
 	void Init();
 	void Update();

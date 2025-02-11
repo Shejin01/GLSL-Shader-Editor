@@ -7,15 +7,17 @@ glm::mat4 Camera::GetViewMatrix() const {
 	return glm::lookAt(position, position + front, up);
 }
 void Camera::ProcessInputs(Input* input, float dt) {
-	if (input->GetKeyPressed(GLFW_KEY_F2) && !ImGui::GetIO().WantCaptureKeyboard && !ImGui::GetIO().WantCaptureMouse) {
-		if (!cursorDisabled) {
+	if (input->GetKeyPressed(GLFW_KEY_F2)) {
+		if (!cursorDisabled && !ImGui::GetIO().WantCaptureKeyboard && !ImGui::GetIO().WantCaptureMouse) {
 			input->SetCursorMode(GLFW_CURSOR_DISABLED);
 			cursorDisabled = true;
 			firstMouse = true;
+			ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse | ImGuiConfigFlags_NoKeyboard;
 		}
 		else {	
 			input->SetCursorMode(GLFW_CURSOR_NORMAL);
 			cursorDisabled = false;
+			ImGui::GetIO().ConfigFlags ^= ImGuiConfigFlags_NoMouse | ImGuiConfigFlags_NoKeyboard;
 		}
 	}
 	if (cursorDisabled) {
